@@ -1,0 +1,173 @@
+﻿<script src="https://code.iconify.design/2/2.1.0/iconify.min.js"></script>
+
+<style>
+    /* Sidebar container */
+    .sidebar-nav {
+    background-color: #212D3D;
+    height: 100vh; /* Full height */
+    width: 250px; /* Fixed width for sidebar */
+    border-radius: 0; /* Remove rounded corners */
+    padding-top: 55px; /* Add some space from top */
+    padding-bottom: 55px; /* Add space at the bottom */
+
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0px;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.5);
+    z-index: 3; /* Ensure it's above other elements */
+    }
+
+    .sidebar-item {
+    margin: 0;
+    padding: 5px 15px;
+    border-bottom: 1px solid #333;
+    }
+
+    .sidebar-item a {
+    display: flex;
+    align-items: center;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 30px;
+    padding: 10px 15px;
+    transition: all 0.3s ease;
+    }
+
+    .sidebar-item a:hover {
+    background-color: #343a40;
+    }
+
+    .iconify {
+    font-size: 20px;
+    margin-right: 10px;
+    }
+
+    .sidebar-item .hide-menu {
+    font-size: 16px;
+    }
+
+    .sidebar-item a.active, .sidebar-item a:hover {
+    background-color: #1b232a;
+    }
+
+    .sidebar-header {
+    text-align: center;
+    color: #fff;
+    margin-bottom: 15px;
+    }
+
+    .main-content {
+    margin-left: 250px; /* Sidebar genişliği ile uyumlu */
+    padding: 20px;
+    margin-right: 0; /* Sağ kenar boşluğunu sıfırlar */
+    width: calc(100% - 250px); /* Yan menünün genişliği ile uyumlu */
+    overflow: hidden; /* Taşan içeriği gizler */
+    box-sizing: border-box; /* Padding ve border'ı genişliğe dahil eder */
+    }
+
+    .container-fluid {
+    width: 100%; /* Genişliği tüm ekranı kaplasın */
+    height: 100%; /* Yüksekliği tüm ekranı kaplasın */
+    }
+
+    @@media (max-width: 768px) {
+        .sidebar-nav a span.hide-menu {
+            display: none; /* Metni gizle */
+        }
+
+        .sidebar-item a {
+            justify-content: center; /* İkonları ortala */
+            padding: 10px; /* İkonlar için yeterli alan bırak */
+        }
+        /* Yan menü genişliğini küçült */
+        .sidebar-nav {
+            width: 70px;
+        }
+
+        .main-content {
+            margin-left: 70px; /* İçeriği yeni sidebar genişliğiyle hizala */
+            width: calc(100% - 70px); /* Yan menünün genişliği ile uyumlu */
+        }
+
+        .iconify {
+            font-size: 30px;
+            margin-right: 0px;
+          
+        }
+    }
+</style>
+
+<div class="container-fluid">
+    <div class="row">
+        <!-- Sidebar -->
+        <div class="col-md-3">
+            <div id="sidebarMenu" class="sidebar-nav">
+                <ul class="list-group list-group-flush">
+                     
+                        <li class="sidebar-item">
+                            <a class="nav-link d-flex align-items-center" asp-action="TeklifEkGu">
+                                <span class="iconify" data-icon="solar:document-add-bold-duotone"></span>
+                                <span class="hide-menu">Teklif Giriş</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-item">
+                            <a class="nav-link d-flex align-items-center" asp-action="TeklifFirma">
+                                <span class="iconify" data-icon="mdi:briefcase-outline"></span>
+                                <span class="hide-menu">Teklif Firmaları</span>
+                            </a>
+                        </li>
+                    
+                    <li class="sidebar-item">
+                        <a class="nav-link d-flex align-items-center" asp-action="MTI">
+                            <span class="iconify" data-icon="solar:home-smile-bold-duotone"></span>
+                            <span class="hide-menu">Fizibilite</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-item">
+                        <a class="nav-link d-flex align-items-center" asp-action="TeklifTakip">
+                            <span class="iconify" data-icon="solar:clipboard-list-bold-duotone"></span>
+                            <span class="hide-menu">Açık Teklifler</span>
+                        </a>
+                    </li>
+                   
+                        <li class="sidebar-item">
+                            <a class="nav-link d-flex align-items-center" asp-action="TeklifListe">
+                                <span class="iconify" data-icon="solar:layers-minimalistic-bold-duotone"></span>
+                                <span class="hide-menu">Tüm Teklif Kayıtları</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-item">
+                            <a class="nav-link d-flex align-items-center" asp-action="tOnay">
+                                <span class="iconify" data-icon="solar:check-circle-bold-duotone"></span>
+                                <span class="hide-menu">Teklif Durumu</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-item">
+                            <a class="nav-link d-flex align-items-center" asp-action="Ozet">
+                                <span class="iconify" data-icon="mdi:chart-bar"></span>
+                                <span class="hide-menu">Özet Skorları</span>
+                            </a>
+                        </li>
+                     
+                    @*  <li class="sidebar-item">
+                        <a class="nav-link d-flex align-items-center" asp-action="ERA">
+                            <span class="iconify" data-icon="mdi:treasure-chest"></span>
+                            <span class="hide-menu">ERA</span>
+                        </a>
+                    </li> *@
+                     
+                    <li class="sidebar-item">
+                        <a class="nav-link d-flex align-items-center" asp-action="Ayarlar">
+                            <span class="iconify" data-icon="mdi:gear"></span>
+                            <small class="hide-menu"></small>
+                        </a>
+                    </li>
+                        
+                </ul>
+            </div>
+        </div>
+
+        <!-- Main content -->
+        <div class="main-content ">
+         

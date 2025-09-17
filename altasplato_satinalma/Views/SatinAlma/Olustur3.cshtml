@@ -1,0 +1,436 @@
+﻿@{
+    ViewData["Title"] = "Oluştur";
+}
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+@Html.Partial("_SASidebar")
+
+<style>
+    
+.date-display {
+    font-size: 14px; /* Daha küçük yazı tipi */
+    font-weight: bold;
+    text-align: center;
+    margin: 10px 0;
+    color: #333;
+}
+
+.section-box {
+    border: 1px solid #ddd;
+    padding: 8px; /* Daha küçük padding */
+    margin-bottom: 10px;
+    border-radius: 6px;
+    background-color: #f9f9f9;
+}
+
+.section-box h2 {
+    color: #0066cc;
+    font-size: 16px; /* Daha küçük başlık */
+}
+
+.section-box ul {
+    margin-left: 10px;
+    list-style-type: none;
+}
+
+.section-box ul li {
+    font-size: 14px; /* Daha küçük yazı tipi */
+    margin-bottom: 3px;
+}
+
+.receipt-container {
+    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.1);
+}
+
+.footer-text {
+    font-size: 8px; /* Daha küçük footer yazısı */
+    color: #777;
+}
+
+.important-notes {
+    background-color: #fff3cd;
+    border-left: 4px solid #ffeeba;
+    padding: 6px;
+    font-size: 14px; /* Daha küçük yazı tipi */
+}
+
+.qr-code-container {
+    text-align: center;
+    margin-top: 10px;
+}
+
+.download-btn {
+    background-color: #007bff;
+    color: white;
+    padding: 6px 12px; /* Daha küçük buton */
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px; /* Daha küçük buton yazısı */
+}
+
+.download-btn:hover {
+    background-color: #0056b3;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 10px; /* Daha küçük padding */
+    margin-bottom: 15px;
+    text-align: center;
+    padding: 10px;
+}
+
+.header img {
+    max-width: 160px; /* Daha küçük logo */
+}
+
+.header .contact-info {
+    text-align: right;
+    font-size: 14px; /* Daha küçük yazı tipi */
+}
+
+.header .contact-info p {
+    margin: 3px 0;
+}
+
+.table th {
+    background-color: #0066cc;
+    color: white;
+    font-size: 14px; /* Daha küçük başlık */
+}
+
+.table td,
+.table th {
+    padding: 6px; /* Daha küçük padding */
+    text-align: center;
+    font-size: 14px; /* Daha küçük yazı tipi */
+}
+
+/* Kompakt Stil */
+.section-box {
+    padding: 8px; /* Daha küçük padding */
+    font-size: 14px; /* Daha küçük yazı tipi */
+}
+
+.company-info h2,
+.contact-info h2 {
+    font-size: 16px; /* Daha küçük başlık */
+    margin-bottom: 6px;
+}
+
+.company-info h3,
+.contact-info h3 {
+    font-size: 14px; /* Daha küçük başlık */
+}
+
+.company-info p,
+.contact-info p {
+    font-size: 14px; /* Daha küçük yazı tipi */
+    margin-bottom: 3px;
+}
+
+.row {
+    margin-bottom: 6px; /* Daha küçük aralık */
+}
+
+.col-md-6 {
+    padding-right: 8px;
+    padding-left: 8px; /* Daha küçük padding */
+}
+
+.contact-info p {
+    margin: 3px 0;
+}
+
+
+</style>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // PDF indirme butonuna tıklama işlemi
+        document.querySelector('.download-btn').addEventListener('click', function () {
+            // Butonları görünmez yap
+            hideButtons();
+            // PDF indirme işlemini başlat
+            downloadPDF();
+        });
+
+            function hideButtons() {
+        document.querySelector('#add-product-row').style.display = 'none';
+        document.querySelector('#add-product-column').style.display = 'none';
+        document.querySelector('.btn-warning').style.display = 'none';
+        document.querySelector('.btn-danger').style.display = 'none'; // Sil butonunu gizle
+         document.querySelectorAll('.btn').forEach(button => {
+        button.style.display = 'none';
+    });
+    }
+
+    function showButtons() {
+        document.querySelector('#add-product-row').style.display = 'block';
+        document.querySelector('#add-product-column').style.display = 'block';
+        document.querySelector('.btn-warning').style.display = 'block';
+        document.querySelector('.btn-danger').style.display = 'block'; // Sil butonunu göster
+         document.querySelectorAll('.btn').forEach(button => {
+        button.style.display = 'block';
+    });
+    }
+
+
+        function downloadPDF() {
+            var element = document.getElementById('print-area'); // PDF'ye dönüştürülecek HTML içeriği
+            var htmlContent = document.getElementById('print-area').innerHTML;
+
+            var opt = {
+                margin: [5, 5, 5, 5], // Küçük margin ayarları
+                filename: 'SiparisIstek_raporu.pdf',
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: {
+                    scale: 4, // Düşük çözünürlük
+                    logging: true,
+                    letterRendering: true
+                },
+                jsPDF: {
+                    unit: 'mm',
+                    format: 'letter', // Sayfa boyutu A4
+                    orientation: 'portrait', // Sayfa yönü dikey
+                    putOnlyUsedFonts: true,
+                    floatPrecision: 16,
+                    margin: [5, 5, 5, 5] // Kenar boşlukları
+                }
+            };
+
+                // PDF'yi Blob olarak al
+                html2pdf().from(element).set(opt).outputPdf('blob').then(function (pdfBlob) {
+                var formData = new FormData();
+                var dosyaAdi = document.getElementById('dosyaAdi').value;
+
+                formData.append('pdf', pdfBlob);
+                formData.append('htmlContent', htmlContent);  // Eğer HTML içeriğini de göndermek isterseniz
+                formData.append('dosyaAdi', dosyaAdi);  // Dosya Adı'nı ekleyin
+
+                // Sunucuya PDF gönderme işlemi
+                fetch('@Url.Action("PdfKaydet", "SatinAlma")', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Server response:', data);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+            });
+
+            // İçeriği PDF'ye dönüştür ve indir
+            html2pdf().from(element).set(opt).save().then(() => {
+                // PDF başarıyla indirildikten sonra butonları tekrar görünür yap
+                showButtons();
+            });
+        }
+    });
+
+
+</script>
+ 
+<script>
+    // ViewBag'den gelen veriyi al
+    const initialProductData = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(ViewBag.Talep));
+
+    let productColumns = ['Ürün Adı', 'Özellikler', 'Miktar', 'Termin Tarihi', 'İşlemler']; // "İşlemler" sütunu eklendi
+    let productRows = initialProductData.map(item => [item.MalzemeAdi, '', '', '']); // Ürün adını alıp diğer sütunları boş bırak
+
+    console.log("ViewBag içeriği:", initialProductData); // Kontrol için log
+
+    // Dinamik tabloyu oluşturma fonksiyonu
+    function populateProductTable() {
+        const productTable = document.getElementById('product-table');
+        const thead = productTable.getElementsByTagName('thead')[0];
+        const tbody = productTable.getElementsByTagName('tbody')[0];
+
+        // Mevcut tablo başlıklarını temizle ve yeniden oluştur
+        thead.innerHTML = '';
+        let headerRow = thead.insertRow();
+        productColumns.forEach(col => {
+            let th = document.createElement('th');
+            th.textContent = col;
+            headerRow.appendChild(th);
+        });
+
+        // Mevcut satırları temizle ve yeniden oluştur
+        tbody.innerHTML = '';
+        productRows.forEach((rowData, rowIndex) => {
+            let row = tbody.insertRow();
+
+            productColumns.forEach((col, idx) => {
+                if (col === 'İşlemler') {
+                    // "Sil" düğmesi için hücre oluştur
+                    let cell = row.insertCell(idx);
+                    let deleteButton = document.createElement('button');
+                    deleteButton.textContent = 'Sil';
+                    deleteButton.className = 'btn btn-danger btn-sm';
+                    deleteButton.onclick = function () {
+                        deleteProductRow(rowIndex); // Satır silme fonksiyonunu çağır
+                    };
+                    cell.appendChild(deleteButton);
+                } else {
+                    let cell = row.insertCell(idx);
+                    let input = document.createElement('input');
+                    input.type = 'text';
+                    input.value = rowData[idx] || ''; // Veri varsa kullan, yoksa boş bırak
+                    input.onchange = function () {
+                        rowData[idx] = input.value; // Girdi değiştiğinde veri güncellenir
+                    };
+                    cell.appendChild(input);
+                }
+            });
+        });
+    }
+
+    // Yeni satır ekleme fonksiyonu
+    function addProductRow() {
+        let newRow = productColumns.slice(0, -1).map(() => ''); // "İşlemler" hariç boş değerlerle yeni satır
+        productRows.push(newRow);
+        populateProductTable();
+    }
+
+    // Yeni sütun ekleme fonksiyonu
+    function addProductColumn() {
+        const columnName = prompt('Yeni sütun adı girin:');
+        if (columnName) {
+            productColumns.splice(productColumns.length - 1, 0, columnName); // "İşlemler"den önce yeni sütunu ekle
+            productRows.forEach(row => row.splice(row.length - 1, 0, '')); // Yeni sütun için her satıra boş değer ekle
+            populateProductTable();
+        }
+    }
+
+    // Satır silme fonksiyonu
+    function deleteProductRow(index) {
+        productRows.splice(index, 1); // Belirtilen indeksteki satırı kaldır
+        populateProductTable(); // Tabloyu yeniden oluştur
+    }
+      function addImportantNote() {
+        const note = prompt('Yeni önemli konuyu girin:');
+        if (note) {
+            const notesList = document.getElementById('important-notes-list');
+            const li = document.createElement('li');
+            li.textContent = note;
+            notesList.appendChild(li);
+        }
+    }
+    // Tabloyu başlat
+    populateProductTable();
+</script>
+
+
+<div>
+    <table class="table table-bordered table-sm">
+        <thead>
+            <tr>
+                <th>Malzeme Adı</th>
+                <th>Mevcut Stok</th>
+                <th>Talep Miktarı</th>
+                <th>Termin Tarihi</th>
+                <th>Açıklama</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.MalzemeAdi</td>
+                    <td>@item.MevcutStok</td>
+                    <td>@item.TalepMiktari</td>
+                    <td>@item.TerminTarihi.ToString("dd/MM/yyyy")</td> <!-- Format the date if needed -->
+                    <td>@item.Aciklama</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+
+    <div class="container mt-5">
+<div id="print-area" >            <div class="header">
+                <img src="~/AltasLogo.png" alt="ALTAS Aluminum">
+@*                 <p><strong>Rapor Numarası:</strong> #123456</p>
+ *@                <div class="contact-info">
+                    <hr />
+                    <h3 class="date-display"><strong>@DateTime.Now.ToShortDateString()</strong></h3>
+                    <hr />
+                    <p><strong>E-Posta:</strong> info@altasal.com</p>
+                    <p><strong>Web:</strong> www.altasal.com</p>
+                </div>
+            </div>
+
+            <header class="text-center mb-4">
+                <h1>SİPARİŞ TALEP FORMU</h1>
+                <p class="text-muted" id="report-date"></p>
+            </header>
+
+            <section class="company-info section-box">
+                <h2>Firma Bilgileri</h2>
+                <div class="row">
+                    <div class="col-md-6">
+                        <h3>ALTAŞ ALÜMİNYUM İMALAT SAN. VE TİC. A.Ş.</h3>
+                        <p> Muallimköy Mahallesi 4127. Sokak No:8 Gebze 41400 - Kocaeli/ TURKEY</p>
+                        <p><strong>Telefon:</strong> +90 262 646 14 84 - 85</p>
+                        <p><strong>Faks:</strong> +90 262 646 14 86</p>
+                    </div>
+                    <div class="col-md-6">
+                        <h3>İlgili Kişi Bilgileri</h3>
+                        <p><strong>Adı Soyadı:</strong> Okan YILMAZ</p>
+                        <p><strong>Görevi:</strong> Bilgi İşlem ve Satın Alma Uzmanı / I.T and Purchasing Specialist</p>
+                        <p><strong>Telefon:</strong> +(90) 262 646 14 84-85 / Dahili: 18</p>
+                        <p><strong>Gsm:</strong> +(90) 541 843 02 27</p>
+                        <p><strong>Faks:</strong> +(90) 262 646 14 86</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="product-info section-box">
+                <h2>Ürün Bilgileri</h2>
+                <table id="product-table" class="table table-bordered">
+                    <thead></thead>
+                    <tbody></tbody>
+                </table>
+                <button id="add-product-row"  class="btn btn-secondary mt-2" onclick="addProductRow()">Satır Ekle</button>
+                <button id="add-product-column" class="btn btn-secondary mt-2" onclick="addProductColumn()">Sütun Ekle</button>
+            </section>
+
+            <section class="important-notes section-box">
+                <h3>Önemli Notlar</h3>
+                <ul id="important-notes-list"></ul>
+                <button class="btn btn-warning mt-2" onclick="addImportantNote()">Not Ekle</button>
+            </section>
+
+            <div class="qr-code-container">
+                <img src="~/altas.com.png" alt="QR Kodu">
+            </div>
+
+            <div class="footer-text mt-5 text-center">
+                <p>Bu rapor, müşterilerimiz için hazırlanmıştır. Lütfen bizimle iletişime geçmekten çekinmeyin.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="text-center mt-5">
+    <label for="dosyaAdi" style="font-weight: bold;">Dosya Adı:</label>
+    <input type="text" id="dosyaAdi" name="dosyaAdi" class="form-control" required />
+    <small>Pdf indirmeden önce sayfa ölçeğini 50 yapınız. </small>
+    <button class="download-btn">PDF İndir ve kaydet</button>
+</div>
+@* <h2>Sipariş Talep PDF Yükle</h2>
+<form method="post" enctype="multipart/form-data" asp-action="PdfKaydet">
+    <label for="dosyaAdi">Dosya Adı:</label>
+    <input type="text" name="dosyaAdi" class="form-control" required />
+
+
+
+    <button type="submit" class="btn btn-success mt-2">Kaydet</button>
+</form> *@

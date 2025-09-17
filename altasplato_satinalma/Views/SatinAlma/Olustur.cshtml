@@ -1,0 +1,505 @@
+﻿@Html.Partial("_SASidebar")
+
+<style>
+
+    .date-display {
+        font-size: 14px; /* Daha küçük yazı tipi */
+        font-weight: bold;
+        text-align: center;
+        margin: 10px 0;
+        color: #333;
+    }
+
+    .section-box {
+        border: 1px solid #ddd;
+        padding: 8px; /* Daha küçük padding */
+        margin-bottom: 10px;
+        border-radius: 6px;
+        background-color: #f9f9f9;
+    }
+
+        .section-box h2 {
+            color: #0066cc;
+            font-size: 16px; /* Daha küçük başlık */
+        }
+
+        .section-box ul {
+            margin-left: 10px;
+            list-style-type: none;
+        }
+
+            .section-box ul li {
+                font-size: 14px; /* Daha küçük yazı tipi */
+                margin-bottom: 3px;
+            }
+
+    .receipt-container {
+        box-shadow: 0 1px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .footer-text {
+        font-size: 8px; /* Daha küçük footer yazısı */
+        color: #777;
+    }
+
+    .important-notes {
+        background-color: #fff3cd;
+        border-left: 4px solid #ffeeba;
+        padding: 6px;
+        font-size: 14px; /* Daha küçük yazı tipi */
+    }
+
+    .qr-code-container {
+        text-align: center;
+        margin-top: 10px;
+    }
+
+    .download-btn {
+        background-color: #007bff;
+        color: white;
+        padding: 6px 12px; /* Daha küçük buton */
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 12px; /* Daha küçük buton yazısı */
+    }
+
+        .download-btn:hover {
+            background-color: #0056b3;
+        }
+
+    .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid #ddd;
+        padding-bottom: 10px; /* Daha küçük padding */
+        margin-bottom: 15px;
+        text-align: center;
+        padding: 10px;
+    }
+
+        .header img {
+            max-width: 160px; /* Daha küçük logo */
+        }
+
+        .header .contact-info {
+            text-align: right;
+            font-size: 14px; /* Daha küçük yazı tipi */
+        }
+
+            .header .contact-info p {
+                margin: 3px 0;
+            }
+
+    .table th {
+        background-color: #0066cc;
+        color: white;
+        font-size: 14px; /* Daha küçük başlık */
+    }
+
+    .table td,
+    .table th {
+        padding: 6px; /* Daha küçük padding */
+        text-align: center;
+        font-size: 14px; /* Daha küçük yazı tipi */
+    }
+
+    /* Kompakt Stil */
+    .section-box {
+        padding: 8px; /* Daha küçük padding */
+        font-size: 14px; /* Daha küçük yazı tipi */
+    }
+
+    .company-info h2,
+    .contact-info h2 {
+        font-size: 16px; /* Daha küçük başlık */
+        margin-bottom: 6px;
+    }
+
+    .company-info h3,
+    .contact-info h3 {
+        font-size: 14px; /* Daha küçük başlık */
+    }
+
+    .company-info p,
+    .contact-info p {
+        font-size: 14px; /* Daha küçük yazı tipi */
+        margin-bottom: 3px;
+    }
+
+    .row {
+        margin-bottom: 6px; /* Daha küçük aralık */
+    }
+
+    .col-md-6 {
+        padding-right: 8px;
+        padding-left: 8px; /* Daha küçük padding */
+    }
+
+    .contact-info p {
+        margin: 3px 0;
+    }
+
+</style>
+<script>
+    function downloadPDF() {
+        table.print(false, true); // Tabloyu yazdırılabilir hale getir
+
+        setTimeout(() => {
+            var printableTable = document.querySelector(".tabulator-print-table");
+
+            if (printableTable) {
+                var tableHTML = table.printToHTML(); // Tabloyu HTML formatına çevir
+
+                // Header ve Footer'ı manuel olarak ekleyelim
+                var tableHeader = document.querySelector(".tabulator-header");
+                var tableFooter = document.querySelector(".tabulator-footer");
+
+                if (tableHeader) {
+                    tableHTML = tableHeader.outerHTML + tableHTML; // Header'ı HTML'e ekle
+                }
+
+                if (tableFooter) {
+                    tableHTML = tableHTML + tableFooter.outerHTML; // Footer'ı HTML'e ekle
+                }
+
+                var opt = {
+                    margin: [5, 5, 5, 5],
+                    filename: 'Tablo_raporu.pdf',
+                    image: { type: 'jpeg', quality: 0.98 },
+                    html2canvas: {
+                        scale: 4,
+                        logging: true,
+                        letterRendering: true
+                    },
+                    jsPDF: {
+                        unit: 'mm',
+                        format: 'a4',
+                        orientation: 'portrait',
+                        putOnlyUsedFonts: true,
+                        floatPrecision: 16
+                    }
+                };
+
+                // PDF'yi oluştur
+                html2pdf().from(tableHTML).set(opt).outputPdf('blob').then(function (pdfBlob) {
+                    var formData = new FormData();
+                    formData.append('pdf', pdfBlob);
+                    formData.append('htmlContent', tableHTML);
+
+                    fetch('@Url.Action("PdfKaydet", "SatinAlma")', {
+                        method: 'POST',
+                        body: formData
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log('Sunucu yanıtı:', data);
+                    })
+                    .catch(error => {
+                        console.error('Sunucuya gönderme hatası:', error);
+                    });
+                });
+
+                // PDF indir
+                html2pdf().from(tableHTML).set(opt).save();
+            } else {
+                alert("Tablo oluşturulamadı.");
+            }
+        }, 500); // Tablo oluşturulması için biraz bekliyoruz
+    }
+
+       
+
+</script>
+<div>
+
+    <div>
+        <table class="table table-bordered table-sm">
+            <thead>
+                <tr>
+                    <th>Malzeme Adı</th>
+                    <th>Mevcut Stok</th>
+                    <th>Talep Miktarı</th>
+                    <th>Termin Tarihi</th>
+                    <th>Açıklama</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.MalzemeAdi</td>
+                        <td>@item.MevcutStok</td>
+                        <td>@item.TalepMiktari</td>
+                        <td>@item.TerminTarihi.ToString("dd/MM/yyyy")</td> <!-- Format the date if needed -->
+                        <td>@item.Aciklama</td>
+                    </tr>
+                    <input type="hidden" value="@item.FormId" id="formId"/>
+                }
+            </tbody>
+        </table>
+    </div>
+    <!-- Modal -->
+    <div class="modal" id="columnModal" tabindex="-1" aria-labelledby="columnModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="columnModalLabel">Yeni Sütun Ekleyin</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="columnName">Sütun Adı</label>
+                        <input type="text" class="form-control" id="columnName" placeholder="Yeni sütun adı girin">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button>
+                    <button type="button" class="btn btn-primary" id="saveColumn">Kaydet</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal -->
+    <div id="noteModal" class="modal" tabindex="-1"  aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Yeni Not</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <textarea id="noteText" class="form-control" rows="5"></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Kapat</button>
+                    <button type="button" class="btn btn-primary" id="saveNoteBtn">Kaydet</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="print-area">
+        <div class="container mt-5">
+            <div id="print-area">
+                <div class="header">
+                    <img src="~/AltasLogo.png" alt="ALTAS Aluminum">
+                        <div class="contact-info">
+                            <hr />
+                            <h3 class="date-display"><strong>@DateTime.Now.ToShortDateString()</strong></h3>
+                            <hr />
+                            <p><strong>E-Posta:</strong> info@altasal.com</p>
+                            <p><strong>Web:</strong> www.altasal.com</p>
+                        </div>
+                </div>
+
+                <header class="text-center mb-4">
+                    <h1>SİPARİŞ TALEP FORMU</h1>
+                    <p class="text-muted" id="report-date"></p>
+                </header>
+
+                <section class="company-info section-box">
+                    <h2>Firma Bilgileri</h2>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h3>ALTAŞ ALÜMİNYUM İMALAT SAN. VE TİC. A.Ş.</h3>
+                            <p> Muallimköy Mahallesi 4127. Sokak No:8 Gebze 41400 - Kocaeli/ TURKEY</p>
+                            <p><strong>Telefon:</strong> +90 262 646 14 84 - 85</p>
+                            <p><strong>Faks:</strong> +90 262 646 14 86</p>
+                        </div>
+                        <div class="col-md-6">
+                            <h3>İlgili Kişi Bilgileri</h3>
+                            <p><strong>Adı Soyadı:</strong> Okan YILMAZ</p>
+                            <p><strong>Görevi:</strong> Bilgi İşlem ve Satın Alma Uzmanı / I.T and Purchasing Specialist</p>
+                            <p><strong>Telefon:</strong> +(90) 262 646 14 84-85 / Dahili: 18</p>
+                            <p><strong>Gsm:</strong> +(90) 541 843 02 27</p>
+                            <p><strong>Faks:</strong> +(90) 262 646 14 86</p>
+                        </div>
+                    </div>
+                </section>
+                <div id="invoice-table"></div>
+ 
+                <div>
+                    <h5>Açıklamalar:</h5>
+                    <div id="table-notes"></div>
+                     </div>
+                </div>
+
+ 
+
+                <div class="qr-code-container">
+                    <img src="~/altas.com.png" alt="QR Kodu">
+                </div>
+
+                <div class="footer-text mt-5 text-center">
+                    <p>Bu rapor, müşterilerimiz için hazırlanmıştır. Lütfen bizimle iletişime geçmekten çekinmeyin.</p>
+                </div>
+         </div>
+</div>
+</div>
+
+
+<script>
+ 
+    var rowMenu = [
+            {
+        label: "<i class='fas fa-plus'></i> Satır ekle",
+        action: function (e, row) {
+            table.addRow({});  // Yeni bir satır ekler
+        }
+    },
+    {
+        label: "<i class='fas fa-trash-alt'></i> Satır sil",
+        action: function (e, row) {
+            row.delete();  // Seçilen satırı siler
+        }
+    },
+  
+    {
+        label: "<i class='fas fa-columns'></i> Sütun ekle",
+        action: function (e, row) {
+            // Modal'ı aç
+            $('#columnModal').modal('show');
+        }
+    },
+       {
+        label: "<i class='fas fa-sticky-note'></i> Not ekle",
+        action: function (e, row) {
+            // Open modal to enter a new note
+            openNoteModal(row);
+        }
+    },
+
+    {
+        label: "<i class='fas fa-save'></i> Yazdır",
+        action: function (e, row) {
+             table.print();  // Tabloyu yazdırır
+ 
+        }
+    }
+
+    ];
+
+    var tableData = @Html.Raw(Json.Serialize(Model));
+    console.log("data: ", tableData);
+
+    var table = new Tabulator("#invoice-table", {
+        layout: "fitColumns",
+        height: "400px",
+        printRowRange: "all",
+        printAsHtml: true,
+        rowContextMenu: rowMenu, // Satır sağ tık menüsü
+        printAsHtml : true , //html tablo yazdırmayı etkinleştir
+    printStyled : true ,
+        printHeader: function () {
+            var imageSrc = '@Url.Content("~/AltasLogo.png")';
+
+            var dynamicHeader = `
+                <div class="header">
+                    <img src="${imageSrc}" alt="ALTAS Aluminum" style="height: 80px;" />
+                    <div class="contact-info">
+                        <hr />
+                        <h3 class="date-display"><strong>@DateTime.Now.ToShortDateString()</strong></h3>
+                        <hr />
+                        <p><strong>E-Posta:</strong> info@altasal.com</p>
+                        <p><strong>Web:</strong> www.altasal.com</p>
+                    </div>
+                </div>
+
+                <header class="text-center mb-4">
+                    <h1>SİPARİŞ TALEP FORMU</h1>
+                    <p class="text-muted" id="report-date"></p>
+                </header>
+
+                <section class="company-info section-box">
+                    <h2>Firma Bilgileri</h2>
+                    <div class="row">
+    <div class="col-12 col-sm-6 col-md-6 col-lg-6">
+                              <h3>ALTAŞ ALÜMİNYUM İMALAT SAN. VE TİC. A.Ş.</h3>
+                            <p>Muallimköy Mahallesi 4127. Sokak No:8 Gebze 41400 - Kocaeli/ TURKEY</p>
+                            <p><strong>Telefon:</strong> +90 262 646 14 84 - 85</p>
+                            <p><strong>Faks:</strong> +90 262 646 14 86</p>
+                        </div>
+    <div class="col-12 col-sm-6 col-md-6 col-lg-6">
+                              <h3>İlgili Kişi Bilgileri</h3>
+                            <p><strong>Adı Soyadı:</strong> Okan YILMAZ</p>
+                            <p><strong>Görevi:</strong> Bilgi İşlem ve Satın Alma Uzmanı / I.T and Purchasing Specialist</p>
+                            <p><strong>Telefon:</strong> +(90) 262 646 14 84-85 / Dahili: 18</p>
+                            <p><strong>Gsm:</strong> +(90) 541 843 02 27</p>
+                            <p><strong>Faks:</strong> +(90) 262 646 14 86</p>
+                        </div>
+                    </div>
+                </section>
+            `;
+            return dynamicHeader;
+        },
+           printFooter: function () {
+        var imageQr = '@Url.Content("~/altas.com.png")';
+
+            var notes = document.getElementById("table-notes").innerText;
+
+        var dynamicFooter = `
+             <id="table-notes">
+                    <h5>Açıklamalar:</h5>
+                    ${notes || "<p>Not bulunmamaktadır.</p>"}
+                </div>
+            <div class="qr-code-container">
+                <img src="${imageQr}" alt="QR Kodu">
+            </div>
+
+            <div class="footer-text mt-5 text-center">
+                <p>Bu rapor, müşterilerimiz için hazırlanmıştır. Lütfen bizimle iletişime geçmekten çekinmeyin.</p>
+            </div>
+
+           
+        `;
+
+        return dynamicFooter;
+    },
+
+        columns: [
+            { title: "Ürün Adı", field: "malzemeAdi", editor: "input" },
+            { title: "Özellikler", field: "aciklama", editor: "input" },
+            { title: "Miktar", field: "talepMiktari", editor: "input" },
+              { title: "Termin Tarihi", field: "terminTarihi", editor: "date",formatter: function(cell) {
+      var value = cell.getValue();
+      if (!value) return "";
+      return new Date(value).toISOString().split("T")[0];
+    } }
+        ],
+        data: tableData
+    });
+
+    document.getElementById('saveColumn').addEventListener('click', function () {
+        var columnName = document.getElementById('columnName').value.trim();
+        if (columnName) {
+            table.addColumn({ title: columnName, field: columnName.toLowerCase().replace(/\s+/g, '_'), editor: "input" }, false);
+            $('#columnModal').modal('hide');
+            document.getElementById('columnName').value = "";
+        }
+    });
+    function openNoteModal(row) {
+        $('#noteModal').modal('show');
+
+        $('#saveNoteBtn').off('click').on('click', function () {
+            var noteText = $('#noteText').val().trim();
+
+            if (!noteText) {
+                alert("Not alanı boş olamaz!");
+                return;
+            }
+
+            var notesElement = document.getElementById("table-notes");
+            var noteDiv = document.createElement("div");
+            noteDiv.className = "note-footer";
+            noteDiv.textContent = noteText;
+            notesElement.appendChild(noteDiv);
+
+            $('#noteModal').modal('hide');
+            $('#noteText').val('');
+        });
+    }
+      
+
+    
+</script>

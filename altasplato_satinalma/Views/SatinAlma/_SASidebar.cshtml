@@ -1,0 +1,243 @@
+﻿@using System.Xml
+    @* @using altasplato_satinalma.Utility *@
+ @* @model int *@
+@* @using static altasplato_satinalma.Controllers.SatinAlma
+@model SidebarVeriModeli *@
+<script src="https://code.iconify.design/2/2.1.0/iconify.min.js"></script>
+<style>
+    /* Sidebar container */
+    .sidebar-nav {
+    background-color: #212D3D;
+    height: 100vh; /* Full height */
+    width: 250px; /* Fixed width for sidebar */
+    border-radius: 0; /* Remove rounded corners */
+    padding-top: 55px; /* Add some space from top */
+    padding-bottom: 55px; /* Add space at the bottom */
+
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0px;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.5);
+    z-index: 3; /* Ensure it's above other elements */
+    }
+
+    .sidebar-item {
+    margin: 0;
+    padding: 5px 15px;
+    border-bottom: 1px solid #333;
+    }
+
+    .sidebar-item a {
+    display: flex;
+    align-items: center;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 30px;
+    padding: 10px 15px;
+    transition: all 0.3s ease;
+    }
+
+    .sidebar-item a:hover {
+    background-color: #343a40;
+    }
+
+    .iconify {
+    font-size: 20px;
+    margin-right: 10px;
+    }
+
+    .sidebar-item .hide-menu {
+    font-size: 16px;
+    }
+
+    .sidebar-item a.active, .sidebar-item a:hover {
+    background-color: #1b232a;
+    }
+
+    .sidebar-header {
+    text-align: center;
+    color: #fff;
+    margin-bottom: 15px;
+    }
+
+    .main-content {
+    margin-left: 250px; /* Sidebar genişliği ile uyumlu */
+    padding: 20px;
+    margin-right: 0; /* Sağ kenar boşluğunu sıfırlar */
+    width: calc(100% - 250px); /* Yan menünün genişliği ile uyumlu */
+    overflow: hidden; /* Taşan içeriği gizler */
+    box-sizing: border-box; /* Padding ve border'ı genişliğe dahil eder */
+    }
+
+    .container-fluid {
+    width: 100%; /* Genişliği tüm ekranı kaplasın */
+    height: 100%; /* Yüksekliği tüm ekranı kaplasın */
+    }
+
+    @@media (max-width: 768px) {
+    .sidebar-nav a span.hide-menu
+
+    {
+    display: none; /* Sadece yazıları gizle */
+    }
+
+    .sidebar-item a {
+    justify-content: center;
+    padding: 15px 10px;
+    }
+
+    .sidebar-nav {
+    width: 70px;
+    }
+
+    .main-content {
+    margin-left: 70px;
+    width: calc(100% - 70px);
+    }
+
+    .iconify, .fas {
+    font-size: 28px !important;
+    margin-right: 0 !important;
+    display: inline-block !important;
+    visibility: visible !important;
+    }
+
+    .sidebar-item a .iconify,
+    .sidebar-item a i.fas {
+    min-width: 28px;
+    text-align: center;
+    }
+
+    }
+</style>
+
+<div class="container-fluid">
+    <div class="row">
+        <!-- Sidebar -->
+        <div class="col-md-3">
+            <div id="sidebarMenu" class="sidebar-nav">
+                <ul class="list-group list-group-flush">
+                    <!-- Satın Alma Modülü -->
+                    <li class="sidebar-item">
+                        <span class="menu-title text-white font-weight-bold" style="text-align: center; display: block; border-bottom: 2px solid #fff; padding-bottom: 10px;">Satın Alma Modülü</span>
+                        <ul class="submenu list-group list-group-flush">
+                            <li class="sidebar-item">
+                                <a class="nav-link d-flex align-items-center" asp-action="Talep">
+                                    <span class="iconify" data-icon="solar:document-add-bold-duotone"></span>
+                                    <span class="hide-menu">Talep Giriş</span>
+                                </a>
+                            </li>
+
+
+
+                            <li class="sidebar-item">
+                                <a class="nav-link d-flex align-items-center" asp-action="sOnay">
+                                    <span class="iconify" data-icon="mdi:check-circle"></span>
+                                    <span class="hide-menu">Talep/Sipariş Takip</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                     
+                        <!-- Depo Modülü -->
+                        <li class="sidebar-item">
+                            <span class="menu-title text-white font-weight-bold" style="text-align: center; display: block; border-bottom: 2px solid #fff; padding-bottom: 10px;">Yönetici</span>
+
+                            <ul class="submenu list-group list-group-flush">
+                                <li class="sidebar-item">
+                                    <a class="nav-link d-flex align-items-center" asp-action="DepoYonetim">
+                                        <span class="iconify" data-icon="mdi:warehouse"></span>
+                                        <span class="hide-menu">Depo Yönetimi  </span>
+                                    </a>
+                                </li>
+                                <li class="sidebar-item">
+                                    <a class="nav-link d-flex align-items-center" asp-action="TedarikciYonetim">
+                                        <span class="iconify" data-icon="mdi:account-multiple"></span>
+                                        <span class="hide-menu">Tedarikçi Yönetimi</span>
+                                    </a>
+                                </li>
+                                <li class="sidebar-item">
+                                    <a class="nav-link d-flex align-items-center" asp-action="SiparisYonetim">
+                                        <span class="iconify" data-icon="mdi:briefcase-outline"></span>
+                                        <span class="hide-menu">
+                                            Sipariş Yönetimi </span>
+                                    </a>
+                                </li>
+                                @*   <li class="sidebar-item">
+                                <a class="nav-link d-flex align-items-center" asp-action="">
+                                    <span class="iconify" data-icon="mdi:truck"></span>
+                                    <span class="hide-menu">Depo Hareketleri</span>
+                                </a>
+                            </li> *@
+                                <li class="sidebar-item">
+                                    <a class="nav-link d-flex align-items-center" asp-action="UrunYonetim">
+                                        <span class="iconify" data-icon="mdi:tag"></span>
+                                        <span class="hide-menu">Ürün Yönetimi</span>
+                                    </a>
+                                </li>
+
+
+                                <li class="sidebar-item">
+                                    <a class="nav-link d-flex align-items-center" asp-action="OdemeVeFYonetim">
+                                        <i class="fas fa-file-invoice" style="margin-right: 20px;"></i>
+                                        <span class="hide-menu">Fatura Yönetimi</span>
+                                    </a>
+                                </li>
+
+                                @*  <li class="sidebar-item">
+                                    <a class="nav-link d-flex align-items-center" asp-action="Raporlar">
+                                        <span class="iconify" data-icon="mdi:chart-line"></span>
+                                        <span class="hide-menu">Satın Alma Raporları</span>
+                                    </a>
+                                </li> *@
+
+                                @*   <li class="sidebar-item">
+                                <a class="nav-link d-flex align-items-center" asp-action="">
+                                    <span class="iconify" data-icon="mdi:cart-check"></span>
+                                    <span class="hide-menu">Sipariş Karşılamaları</span>
+                                </a>
+                            </li>
+                            <li class="sidebar-item">
+                                <a class="nav-link d-flex align-items-center" asp-action="">
+                                    <span class="iconify" data-icon="mdi:chart-pie"></span>
+                                    <span class="hide-menu">Raporlama ve Analiz</span>
+                                </a>
+                            </li>
+                            <li class="sidebar-item">
+                                <a class="nav-link d-flex align-items-center" asp-action="Profil">
+                                    <span class="iconify" data-icon="mdi:check-circle"></span>
+                                    <span class="hide-menu">İzin ve Onaylar</span>
+                                </a>
+                            </li> *@
+
+                               
+                                <li class="sidebar-item">
+                                    <a class="nav-link d-flex align-items-center" asp-action="Bildirimler">
+                                        <span class="iconify" data-icon="mdi:bell" style="font-size: 24px; margin-right: 10px;"></span>
+                                        <span class="hide-menu">
+                                            Bildirimler @* <span class="badge bg-danger ms-2">@Model</span> *@
+                                        </span>
+                                    </a>
+                                </li>
+
+                            </ul>
+                       
+                    </li>
+                    
+                </ul>
+                        
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+        <!-- Main content -->
+        <div class="main-content ">
+
+
+ 
+ 

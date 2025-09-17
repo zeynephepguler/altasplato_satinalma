@@ -1,0 +1,194 @@
+﻿@{
+    ViewData["Title"] = "Yeni Stok İstek";
+}
+@Html.Partial("_SASidebar")
+<script>
+    $(document).ready(function() {
+        $('#selectInput').select2({
+            placeholder: 'Seçin veya Yazın',
+            allowClear: true
+        });
+    });
+</script>
+<div class="container mt-5">
+    <h2 class="text-center">Yeni Stok İstek Bildirimi</h2>
+
+ @*    <form asp-action="YeniStokBildirim" method="post" class="form-horizontal">
+        <!-- Stok İsteği Başlığı (Hidden olarak otomatik gelecek) -->
+        <input type="hidden" id="MesajBaslik" name="MesajBaslik" value="Yeni Stok İsteği">
+
+        <div class="mb-3">
+            <label for="UrunAdi" class="form-label">Ürün Adı</label>
+            <input type="text" class="form-control" id="UrunAdi" name="UrunAdi" required>
+        </div>
+     
+        <div class="mb-3">
+            <label for="IstekVeren" class="form-label">İstek Veren Kişi</label>
+            <input type="text" class="form-control" id="IstekVeren" name="IstekVeren" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="OlusturmaTarihi" class="form-label">Oluşturma Tarihi</label>
+            <input type="text" class="form-control" id="OlusturmaTarihi" name="OlusturmaTarihi" value="@DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")" readonly>
+        </div>
+
+        <div class="d-flex justify-content-between">
+            <button type="submit" class="btn btn-primary">Bildirim Gönder</button>
+            <a asp-action="TedarikciYonetim" class="btn btn-secondary">Geri Dön</a>
+        </div>
+    </form>
+</div> *@
+    <div style="width: 100%; max-width: 800px; margin: 0 auto; border: 2px solid #212D3D; border-radius: 8px; padding: 20px; background-color: #f9f9f9; font-family: Arial, sans-serif; font-size: 14px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+        <form id="materialForm" method="post" action="KaydetTalepFormu">
+            <h2 style="text-align: center; color: #212D3D; margin-bottom: 20px;">Malzeme Talep Fişi</h2>
+
+            <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
+                <tr>
+                    <td style="width: 30%; font-weight: bold; border: 1px solid #ccc; padding: 8px; background-color: #212D3D; color: #ffffff;">Şirket</td>
+                    <td style="border: 1px solid #ccc; padding: 8px;">
+                        <input class="form-control" type="text" name="SirketAdi" value="ALTAS" style="width: 100%; padding: 5px;" readonly />
+                    </td>
+                </tr>
+                <tr>
+                    <td style="font-weight: bold; border: 1px solid #ccc; padding: 8px; background-color: #212D3D; color: #ffffff;">Form Türü</td>
+                    <td style="border: 1px solid #ccc; padding: 8px;">
+                        <input class="form-control" type="text" name="FormTuru" value="Malzeme Talep Formu" style="width: 100%; padding: 5px;" readonly />
+                    </td>
+                </tr>
+                <tr>
+                    <td style="font-weight: bold; border: 1px solid #ccc; padding: 8px; background-color: #212D3D; color: #ffffff;">Form No</td>
+                    <td style="border: 1px solid #ccc; padding: 8px;">(Otomatik oluşturulacak)</td>
+                </tr>
+                <tr>
+                    <td style="font-weight: bold; border: 1px solid #ccc; padding: 8px; background-color: #212D3D; color: #ffffff;">Tarih</td>
+                    <td style="border: 1px solid #ccc; padding: 8px;">
+                        <input class="form-control" type="text" name="Tarih" value="@DateTime.Now.ToShortDateString()" style="width: 100%; padding: 5px;" readonly />
+                    </td>
+                </tr>
+            </table>
+
+            <h3 style="text-align: center; color: #212D3D; margin-bottom: 20px;">Malzeme Listesi</h3>
+            <table id="materialTable" style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
+                <thead>
+                    <tr>
+                        <th style="border: 1px solid #ccc; padding: 8px; background-color: #212D3D; color: #ffffff;">Malzeme Adı</th>
+                        <th style="border: 1px solid #ccc; padding: 8px; background-color: #212D3D; color: #ffffff;">Mevcut Stok</th>
+                        <th style="border: 1px solid #ccc; padding: 8px; background-color: #212D3D; color: #ffffff;">Talep Miktarı</th>
+                        <th style="border: 1px solid #ccc; padding: 8px; background-color: #212D3D; color: #ffffff;">Termin Tarihi</th>
+                        <th style="border: 1px solid #ccc; padding: 8px; background-color: #212D3D; color: #ffffff;">Açıklama</th>
+                        <th style="border: 1px solid #ccc; padding: 8px; background-color: #212D3D; color: #ffffff;">İşlem</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <div class="mb-3">
+                                <input class="form-control" list="optionsList" id="inputSelect" name="Malzemeler[0].MalzemeAdi" placeholder="Yazın veya Seçin">
+                                <datalist id="optionsList">
+                                    @if (ViewBag.Urunler != null)
+                                    { @foreach (var item in ViewBag.Urunler)
+                                        {
+                                            <option value="@item">@item</option>
+                                        }}
+                                   
+                                </datalist>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="mb-3">
+                                <input class="form-control" type="text" name="Malzemeler[0].MevcutStok" required />
+                            </div>
+                        </td>
+                        <td>
+                            <div class="mb-3">
+                                <input class="form-control" type="text" name="Malzemeler[0].TalepMiktari" required />
+                            </div>
+                        </td>
+                        <td>
+                            <div class="mb-3">
+                                <input class="form-control" type="date" name="Malzemeler[0].TerminTarihi" required />
+                            </div>
+                        </td>
+                        <td>
+                            <div class="mb-3">
+                                <input class="form-control" type="text" name="Malzemeler[0].Aciklama" required />
+                            </div>
+                        </td>
+                        <td>
+                            <div class="mb-3">
+                                <button type="button" class="btn btn-danger btn-sm removeRow">Sil</button>
+                            </div>
+                        </td>
+                    </tr>
+
+                </tbody>
+            </table>
+
+            <div style="text-align: right; margin-bottom: 20px;">
+                <button type="button" id="addRow" style="background-color: #007bff; color: #fff; border: none; padding: 10px 15px; border-radius: 3px; margin-right: 10px;">Yeni Satır Ekle</button>
+            </div>
+
+            <h3 style="text-align: center; color: #212D3D; margin-bottom: 20px;">Onay Bilgileri</h3>
+            <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
+                <tr>
+                        <input class="form-control" type="hidden" name="Onaylayan" style="width: 100%; padding: 5px;" placeholder="Onaylayan kişi adı" value="-" />
+                    
+                </tr>
+                <tr>
+                    <td style="font-weight: bold; border: 1px solid #ccc; padding: 8px; background-color: #212D3D; color: #ffffff;">Talepte Bulunan</td>
+                    <td style="border: 1px solid #ccc; padding: 8px;">
+                        <input class="form-control" type="text" name="TalepEden" style="width: 100%; padding: 5px;" placeholder="Talepte bulunan kişi adı" required />
+                    </td>
+                </tr>
+            </table>
+
+            <div style="text-align: center;">
+                <button type="submit" style="background-color: #28a745; color: #fff; border: none; padding: 10px 20px; border-radius: 5px; font-size: 16px;">Kaydet</button>
+            </div>
+        </form>
+    </div>
+
+
+
+    <script>
+                var urunler = @Html.Raw(Json.Serialize(ViewBag.Urunler));
+
+        document.getElementById("addRow").addEventListener("click", function () {
+            const table = document.getElementById("materialTable").querySelector("tbody");
+            const rowCount = table.rows.length;
+
+            // Create a new row
+            const row = document.createElement("tr");
+
+            // Create the datalist options from urunler
+            let optionsHtml = '';
+            urunler.forEach(item => {
+                optionsHtml += `<option value="${item}">${item}</option>`;
+            });
+
+            // Add the row HTML with dynamic datalist options
+            row.innerHTML = `
+                <td>
+                    <input class="form-control" list="optionsList${rowCount}" id="inputSelect${rowCount}" name="Malzemeler[${rowCount}].MalzemeAdi" placeholder="Yazın veya Seçin">
+                    <datalist id="optionsList${rowCount}">
+                        ${optionsHtml}
+                    </datalist>
+                </td>
+                <td><input type="text" class="form-control" name="Malzemeler[${rowCount}].MevcutStok" /></td>
+                <td><input type="text" class="form-control" name="Malzemeler[${rowCount}].TalepMiktari" required /></td>
+                <td><input type="date" class="form-control" name="Malzemeler[${rowCount}].TerminTarihi" /></td>
+                <td><input type="text" class="form-control" name="Malzemeler[${rowCount}].Aciklama" /></td>
+                <td><button type="button" class="removeRow btn btn-danger btn-sm">Sil</button></td>
+            `;
+
+            // Append the new row to the table
+            table.appendChild(row);
+
+            // Remove row event
+            row.querySelector(".removeRow").addEventListener("click", function () {
+                this.closest("tr").remove();
+            });
+        });
+
+    </script>
+

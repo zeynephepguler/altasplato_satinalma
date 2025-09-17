@@ -1,0 +1,98 @@
+﻿@using altasplato_satinalma.Models
+@{
+    ViewData["Title"] = "Sipariş Yönetim";
+}
+@Html.Partial("_SASidebar")
+@model IEnumerable<Malzemeler>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+          
+
+            var tableData = @Html.Raw(Json.Serialize(Model));
+
+        var table = new Tabulator("#talepTable", {
+            rowContextMenu: rowMenu, // Add context menu to rows
+            layout: "fitColumns",
+            pagination: true, // Enable pagination
+            paginationSize: 20,
+            height: "500px",
+            data: tableData, // Data source
+
+            columns: [
+                {
+                    title: "Durum", field: "durum", hozAlign: "center", headerFilter: "input", formatter: function (cell) {
+                        var value = cell.getValue();
+                        return `<span class="badge ${value === 'Teklif Bekleniyor' ? 'bg-success' : 'bg-warning'}">${value}</span>`;
+                    }
+                },
+                { title: "Form ID", field: "formId", hozAlign: "center", headerFilter: "input" },
+                { title: "Termin Tarihi", field: "terminTarihi", hozAlign: "center", sorter: "date", headerFilter: "input" },
+                { title: "Malzeme Adı", field: "malzemeAdi", hozAlign: "center", headerFilter: "input" },
+                { title: "Talep Miktarı", field: "talepMiktari", hozAlign: "center", editor: "input", headerFilter: "input" },
+                { title: "Mevcut Stok", field: "mevcutStok", hozAlign: "center", headerFilter: "input" },
+                { title: "Açıklama", field: "aciklama", hozAlign: "center", editor: "input", headerFilter: "input" },
+                
+            ]
+        });
+    });
+
+    // Sipariş oluşturma fonksiyonu
+    function siparisOlustur(id) {
+        if (confirm("Sipariş oluşturmak istiyor musunuz?")) {
+            fetch('@Url.Action("SiparisOlustur", "SatinAlma")/' + id, { method: 'POST' })
+                .then(response => response.json())
+                .then(data => alert(data.message))
+                .catch(error => alert("Hata oluştu!"));
+        }
+    }
+
+    // Talep silme fonksiyonu
+    function talepSil(id) {
+        if (confirm("Talebi silmek istiyor musunuz?")) {
+            fetch('@Url.Action("TalepSil", "SatinAlma")/' + id, { method: 'POST' })
+                .then(response => response.json())
+                .then(data => alert(data.message))
+                .catch(error => alert("Hata oluştu!"));
+        }
+    }
+
+</script>
+
+<div class="row justify-content-center mb-4">
+    <div class="col-2 text-center d-flex align-items-center justify-content-center">
+        <h2 style="color: #212d3d;">
+            <i class="fas fa-box"></i> Sipariş Yönetimi
+        </h2>
+    </div>
+
+    <div class="col-2 text-center">
+        <div class="p-3" style="background-color: #7f8c9e; border: 1px solid #34495e; border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); height: 100px;">
+            <div class="d-flex align-items-center justify-content-center">
+                <i class="fas fa-truck fa-lg" style="color: #000080; margin-right: 10px;"></i>
+                <h6 class="mt-2" style="color: white;">Gelen Siparişler</h6>
+            </div>
+            <p class="text-white" style="font-size: 0.8em;">Toplam @Model.Count() Stok İsteği </p>
+        </div>
+    </div>
+</div>
+
+<!-- Talep İstek Listesi -->
+<div class="card shadow-sm mb-4">
+    <div class="card-header" style="background-color: #212d3d; color: #ffffff;">
+        <h4>Talep İstek Listesi</h4>
+    </div>
+
+    <div class="card-body">
+        <form method="get" asp-controller="SatinAlma" asp-action="SiparisYonetim" style="display: inline; margin-right: 10px;">
+            <button type="submit" class="btn btn-outline-primary">Sipariş İstek</button>
+        </form>
+
+        <form method="get" asp-controller="SatinAlma" asp-action="KayitliSiparisForm" style="display: inline;">
+            <button type="submit" class="btn btn-outline-primary">Kayıtlı Formlar</button>
+        </form>
+
+        <!-- Tabulator'un geleceği boş div -->
+        <div id="talepTable"></div>
+    </div>
+</div>
+

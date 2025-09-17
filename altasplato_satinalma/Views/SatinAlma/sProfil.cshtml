@@ -1,0 +1,243 @@
+﻿@using altasplato_satinalma.Models
+@{
+    ViewData["Title"] = "Talep";
+}
+@model CalisanBilg
+
+@Html.Partial("_SASidebar")
+
+        <!-- Ana İçerik -->
+@if (TempData["Message"] != null)
+{
+    <div class="ti-error-404"> 
+        <p>@TempData["Message"]</p>
+    </div>
+}
+else
+{
+    <div class="flex-grow-1 d-flex flex-column" style="background-color: #f8f9fa;">
+        <!-- Header -->
+        <header class="bg-white py-3 px-4 shadow-sm d-flex justify-content-between align-items-center">
+            <h4 class="m-0 fw-bold">Satın Alma Kontrol Paneli</h4>
+            <div>
+                <button class="btn btn-outline-secondary btn-sm me-2"><i class="bi bi-envelope text-primary"></i></button>
+                <button class="btn btn-outline-secondary btn-sm me-2"><i class="bi bi-bell text-success"></i></button>
+                <button class="btn btn-outline-secondary btn-sm"><i class="bi bi-person-circle text-warning"></i></button>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="flex-grow-1 p-3">
+            <div class="container-fluid">
+                <!-- Overview Section -->
+                <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-3">
+                    <div class="col">
+                        <div class="card shadow-sm border-0 text-center">
+                            <div class="card-body">
+                                <i class="bi bi-bar-chart-line-fill fs-3 text-primary mb-2"></i>
+                                <h6 class="fw-bold">Toplam Harcama</h6>
+                                <p class="small m-0">Bu Yıl: <strong>$750,000</strong></p>
+                                <p class="small m-0">Kalan Bütçe: <strong>$250,000</strong></p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="card shadow-sm border-0 text-center">
+                            <div class="card-body">
+                                <i class="bi bi-stack fs-3 text-warning mb-2"></i>
+                                <h6 class="fw-bold">Alım Hedefi</h6>
+                                <p class="small m-0">Belirlenen: <strong>1,000,000 kg</strong></p>
+                                <p class="small m-0">Gerçekleşen: <strong>750,000 kg</strong></p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="card shadow-sm border-0 text-center">
+                            <div class="card-body">
+                                <i class="bi bi-clipboard-check fs-3 text-success mb-2"></i>
+                                <h6 class="fw-bold">Onaylanan Teklifler</h6>
+                                <p class="small m-0">Toplam: <strong>90</strong></p>
+                                <p class="small m-0">Bekleyen: <strong>40</strong></p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="card shadow-sm border-0 text-center">
+                            <div class="card-body">
+                                <i class="bi bi-people-fill fs-3 text-secondary mb-2"></i>
+                                <h6 class="fw-bold">Tedarikçi Performansı</h6>
+                                <p class="small m-0">Ortalama Skor: <strong>%92</strong></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Detailed Reports Section -->
+                <div class="row g-3 mt-4">
+                    <div class="col-md-6">
+                        <div class="card shadow-sm border-0">
+                            <div class="card-body">
+                                <h6 class="fw-bold"><i class="bi bi-file-earmark-text-fill me-2"></i> Raporlar</h6>
+                                <ul class="list-unstyled">
+                                    <li><a href="#" class="text-primary">2024 Q1 Harcama Raporu</a></li>
+                                    <li><a href="#" class="text-primary">Yıl Sonu Performans Raporu</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card shadow-sm border-0">
+                            <div class="card-body">
+                                <h6 class="fw-bold"><i class="bi bi-folder-fill me-2"></i> Sözleşmeler</h6>
+                                <ul class="list-unstyled">
+                                    <li><a href="#" class="text-secondary">Teklif #2024-001 - ABC Tedarikçi</a></li>
+                                    <li><a href="#" class="text-secondary">Sözleşme #2024-002 - XYZ Tedarikçi</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Task Management Section -->
+                <div class="row g-3 mt-4">
+                    <div class="col">
+                        <div class="card shadow-sm border-0">
+                            <div class="card-body">
+                                <h6 class="fw-bold"><i class="bi bi-list-task me-2"></i> Görev Listesi</h6>
+                                <ul class="list-group list-group-flush">
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        Tedarikçi tekliflerini incele
+                                        <span class="badge bg-success rounded-pill">Tamamlandı</span>
+                                    </li>
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        Satın alma onaylarını yap
+                                        <span class="badge bg-warning rounded-pill">Beklemede</span>
+                                    </li>
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        Stok durumunu kontrol et
+                                        <span class="badge bg-danger rounded-pill">Gecikti</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Offer Details Table -->
+                <div class="row g-3 mt-4">
+                    <div class="col">
+                        <div class="card shadow-sm border-0">
+                            <div class="card-body">
+                                <h6 class="fw-bold"><i class="bi bi-table me-2"></i> Teklif Detayları</h6>
+                                <table class="table table-sm table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Teklif No</th>
+                                            <th>Tedarikçi</th>
+                                            <th>Tarih</th>
+                                            <th>Durum</th>
+                                            <th>Miktar</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>1</td>
+                                            <td>2024-001</td>
+                                            <td>ABC Tedarikçi</td>
+                                            <td>01.12.2024</td>
+                                            <td><span class="badge bg-success">Onaylandı</span></td>
+                                            <td>1000 kg</td>
+                                        </tr>
+                                        <tr>
+                                            <td>2</td>
+                                            <td>2024-002</td>
+                                            <td>XYZ Tedarikçi</td>
+                                            <td>02.12.2024</td>
+                                            <td><span class="badge bg-warning">Beklemede</span></td>
+                                            <td>2000 kg</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    
+   
+
+
+
+
+            </div>
+            }
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap scriptleri -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- Bootstrap Icon Kütüphanesi -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Chart.js example data
+    const ctx1 = document.getElementById('offerStatusChart').getContext('2d');
+    new Chart(ctx1, {
+        type: 'pie',
+        data: {
+            labels: ['Kabul Edilen', 'Beklemede', 'Reddedilen'],
+            datasets: [{
+                data: [80, 35, 10],
+                backgroundColor: ['#28a745', '#ffc107', '#dc3545']
+            }]
+        }
+    });
+
+    const ctx2 = document.getElementById('monthlyTrendChart').getContext('2d');
+    new Chart(ctx2, {
+        type: 'line',
+        data: {
+            labels: ['Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran'],
+            datasets: [{
+                label: 'Gönderilen Teklifler',
+                data: [12, 15, 20, 18, 25, 22],
+                borderColor: '#007bff',
+                fill: false
+            }]
+        }
+    });
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const editButton = document.getElementById("editButton");
+        const displayDetails = document.getElementById("userDetails");
+        const editForm = document.getElementById("editForm");
+
+        // Başlangıçta görünürlük ayarlarını kontrol et
+        if (displayDetails.style.display === "") {
+            displayDetails.style.display = "block"; // Varsayılan olarak gösteriliyor
+        }
+        if (editForm.style.display === "") {
+            editForm.style.display = "none"; // Varsayılan olarak gizlenmiş
+        }
+
+        editButton.addEventListener("click", function () {
+            if (displayDetails.style.display === "block") {
+                // Detaylar görünüyorsa, formu göster ve detayları gizle
+                displayDetails.style.display = "none";
+                editForm.style.display = "block";
+            } else {
+                // Form görünüyorsa, detayları göster ve formu gizle
+                displayDetails.style.display = "block";
+                editForm.style.display = "none";
+            }
+        });
+    });
+</script>

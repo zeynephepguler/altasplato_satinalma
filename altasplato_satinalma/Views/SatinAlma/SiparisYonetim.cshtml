@@ -1,0 +1,289 @@
+﻿@using altasplato_satinalma.Models
+@{
+    ViewData["Title"] = "Sipariş Yönetim";
+}
+@Html.Partial("_SASidebar")
+@model IEnumerable<Malzemeler>
+
+<style>
+    .custom-button {
+        border: 2px solid #2121d3;
+        background-color: transparent;
+        color: #2121d3;
+        padding: 8px 16px;
+        border-radius: 5px;
+        font-size: 14px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+        .custom-button:hover {
+            background-color: #2121d3;
+            color: white;
+        }
+</style>
+
+<div class="row justify-content-center mb-4">
+    <div class="col-2 text-center d-flex align-items-center justify-content-center">
+        <h2 style="color: #212d3d;">
+            <i class="fas fa-box"></i> Sipariş Yönetimi
+        </h2>
+    </div>
+
+    <div class="col-2 text-center">
+        <div class="p-3" style="background-color: #7f8c9e; border: 1px solid #34495e; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); height: 100px;">
+            <div class="d-flex align-items-center justify-content-center">
+                <i class="fas fa-hourglass-half fa-lg" style="color: #ffc107; margin-right: 10px;"></i>
+                <h6 class="mt-2" style="color: white; display: inline;">Bekleyen Talepler</h6>
+            </div>
+            <p class="text-white" style="font-size: 0.8em;">Toplam @Model.Count() Talep</p>
+        </div>
+    </div>
+
+    @{
+        var kartNoMessage = TempData["KartNoMessage"] as string;
+    }
+
+    <div class="col-2 text-center">
+        <a href="@Url.Action("TreeBildirim", "SatinAlma")" style="text-decoration:none;">
+            <div class="p-3" style="background-color: #212d3d; border: 1px solid #34495e; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); height: 100px;">
+                <div class="d-flex align-items-center justify-content-center">
+                    <img src="~/TreeColor.png" alt="ThreeColor Logo" style="width:140px; height:40px; object-fit: contain;">
+                </div>
+                <p class="text-white" style="font-size: 0.8em;">@ViewBag.Bildirim bildirim</p>
+            </div>
+        </a>
+    </div>
+</div>
+
+<div class="card shadow-sm mb-4" style="background-color: #ffffff;">
+    <div class="card-header" style="background-color: #212d3d; color: white;">
+        <h4>Talep İstek Listesi</h4>
+    </div>
+
+    <div id="resultMessage" style="display:none; margin: 10px 15px; font-weight: bold;"></div>
+
+    <div class="card-body">
+        <div class="row mb-3">
+            
+            <div class="col-md-3">
+                <input type="date" id="tarihFilter" class="form-control" placeholder="Tarih Seçin" />
+            </div>
+            <div class="col-md-3">
+                <input type="text" id="malzemeAdiFilter" class="form-control" placeholder="Malzeme Adına Göre Ara" />
+            </div>
+        </div>
+
+        <form method="get" asp-controller="SatinAlma" asp-action="SiparisYonetim" style="display:inline-block; margin-right: 10px;">
+            <button type="submit" class="btn btn-outline-primary" title="Sipariş İstek">
+                <i class="fas fa-list-alt"></i>
+            </button>
+        </form>
+
+        <form method="get" asp-controller="SatinAlma" asp-action="SiparisYonetimTermin" style="display:inline-block; margin-right: 10px;">
+            <button type="submit" class="btn btn-outline-secondary" title="Tüm Siparişler">
+                <i class="fas fa-calendar-alt"></i>
+            </button>
+        </form>
+
+        <form method="get" asp-controller="SatinAlma" asp-action="KayitliSiparisForm" style="display:inline-block; margin-right: 10px;">
+            <button type="submit" class="btn btn-outline-success" title="Kayıtlı Formlar">
+                <i class="fas fa-archive"></i>
+            </button>
+        </form>
+
+        <form method="post" asp-action="SiparisOlustur" asp-route-id="1" style="display:inline-block;" onsubmit="return confirm('Satın alma gerçekleştiyse devam ediniz');">
+            <button type="submit" class="btn btn-outline-dark" title="Sipariş Ekle">
+                <i class="fas fa-plus-circle"></i>
+            </button>
+        </form>
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th><i class="fas fa-info-circle"></i></th>
+                    @* <th><i class="fas fa-hashtag"></i> Form ID</th> *@
+                    <th><i class="fas fa-calendar-alt"></i> Termin Tarihi</th>
+                    <th><i class="fas fa-box"></i> Malzeme Adı</th>
+                    <th><i class="fas fa-sort-numeric-up"></i> Talep Miktarı</th>
+                    <th><i class="fas fa-cogs"></i> Mevcut Stok</th>
+                    <th><i class="fas fa-info-circle"></i> Açıklama</th>
+                    <th><i class="fas fa-tools"></i> İşlemler</th>
+                </tr>
+            </thead>
+            <tbody style="color: #212d3d;">
+                @foreach (var talep in Model)
+                {
+                    <tr>
+                        <td>
+                            <span class="badge @(talep.Durum == "Teklif Bekleniyor" ? "bg-success" : "bg-warning")">
+                                @talep.Durum
+                            </span>
+                            <button type="button" class="btnTeklifBekle btn btn-link p-0" data-id="@talep.Id" title="Durumu değiştir">
+                                <i class="fas fa-file-signature"></i>
+                            </button>
+                        </td>
+
+                        @* <td>@talep.Id</td> *@
+                        <td>@(talep.TerminTarihi.HasValue? talep.TerminTarihi.Value.ToString("dd.MM.yyyy") : "-")</td>
+
+                        <td>@talep.MalzemeAdi</td>
+                        <td>@talep.TalepMiktari</td>
+                        <td>@talep.MevcutStok</td>
+                        <td>@talep.Aciklama</td>
+                        <td>
+                            <div class="dropdown">
+                                <button class="btn btn-outline-info dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">...</button>
+                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                    <li>
+                                        <form action="@Url.Action("Olustur", "SatinAlma")" method="post">
+                                            <input type="hidden" name="id" value="@talep.FormId" />
+                                            <button type="submit" class="dropdown-item">
+                                                <i class="fas fa-plus"></i> Sipariş Formu Oluştur
+                                            </button>
+                                        </form>
+                                    </li>
+                                    <li>
+                                        <form asp-action="YeniStokYonetim" method="post">
+                                            <input type="hidden" name="FormId" value="@talep.FormId" />
+                                            <input type="hidden" name="MalzemeAdi" value="@talep.MalzemeAdi" />
+                                            @if (!talep.Urun)
+                                            {
+                                                <button class="dropdown-item" type="submit">
+                                                    <i class="fas fa-ticket"></i> Ürün Kartı Oluştur
+                                                </button>
+                                            }
+                                        </form>
+                                    </li>
+                                    <li>
+                                        <form method="post" asp-action="SiparisOlustur" asp-route-id="@talep.FormId" onsubmit="return confirm('Satın alma gerçekleştiyse devam ediniz');">
+                                            <button type="submit" class="dropdown-item">
+                                                <i class="fas fa-check"></i> Fatura Ekle
+                                            </button>
+                                        </form>
+                                    </li>
+                                    <li>
+                                        <form method="post" asp-action="TalepSil" asp-route-id="@talep.FormId" onsubmit="return confirm('Talebi silmek istiyor musunuz?');">
+                                            <button type="submit" class="dropdown-item">
+                                                <i class="fas fa-trash"></i> Talep Sil
+                                            </button>
+                                        </form>
+                                    </li>
+                                </ul>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Modal HTML -->
+<div class="modal fade" id="tedarikciModal" tabindex="-1" aria-labelledby="tedarikciModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="tedarikciModalLabel">Tedarikçi Adı Giriniz</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="hiddenFormId" />
+                <input type="text" id="tedarikciAdiInput" class="form-control" placeholder="Tedarikçi adı" />
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                <button type="button" class="btn btn-primary" id="modalGonderBtn">Gönder</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        var selectedFormId = null;
+
+        $('.btnTeklifBekle').click(function () {
+            var durumText = $(this).closest('tr').find('.badge').text().trim();
+            selectedFormId = $(this).data('id');
+
+            if (durumText === "Teklif Bekleniyor") {
+                $('#hiddenFormId').val(selectedFormId);
+                $('#tedarikciModal').modal('show');
+            } else {
+                // Durum farklıysa direkt gönder
+                sendTeklifAjax(selectedFormId, "");
+            }
+        });
+
+        $('#modalGonderBtn').click(function () {
+            var id = $('#hiddenFormId').val();
+            var adi = $('#tedarikciAdiInput').val();
+            $('#tedarikciModal').modal('hide');
+            sendTeklifAjax(id, adi);
+        });
+
+        function sendTeklifAjax(formId, adi) {
+            $.ajax({
+                url: '@Url.Action("TeklifBekle", "SatinAlma")',
+                type: 'POST',
+                data: { id: formId, adi: adi },
+                success: function (response) {
+                    var resultDiv = $('#resultMessage');
+                    if (response.success) {
+                        resultDiv.text(response.message).css('color', 'green').fadeIn().delay(2000).fadeOut();
+                        location.reload();
+                    } else {
+                        resultDiv.text(response.message).css('color', 'red').fadeIn().delay(3000).fadeOut();
+                    }
+                },
+                error: function () {
+                    $('#resultMessage').text('Bir hata oluştu!').css('color', 'red').fadeIn().delay(3000).fadeOut();
+                }
+            });
+        }
+    });
+</script>
+
+
+<script>
+    // Bootstrap 5 Tooltip etkinleştirme
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl)
+    })
+</script>
+<script>
+    $(document).ready(function () {
+
+        // ... mevcut kodlarınız (btnTeklifBekle vb.)
+
+        // Filtre inputlarına event ekle
+        $('#malzemeAdiFilter, #tarihFilter').on('input change', function () {
+            var malzemeFilter = $('#malzemeAdiFilter').val().toLowerCase();
+            var tarihFilter = $('#tarihFilter').val(); // yyyy-mm-dd formatında
+
+            $('table tbody tr').each(function () {
+                var malzemeAdi = $(this).find('td').eq(2).text().toLowerCase(); // 3. sütun: Malzeme Adı
+                var tarihText = $(this).find('td').eq(1).text(); // 2. sütun: Tarih (dd.MM.yyyy formatında)
+
+                // Tarih texti yyyy-mm-dd formatına çevirelim filtre karşılaştırması için
+                var tarihParts = tarihText.split('.');
+                var tarihFormatted = '';
+                if (tarihParts.length === 3) {
+                    tarihFormatted = `${tarihParts[2]}-${tarihParts[1].padStart(2, '0')}-${tarihParts[0].padStart(2, '0')}`;
+                }
+
+                var malzemeMatch = malzemeAdi.indexOf(malzemeFilter) !== -1;
+                var tarihMatch = tarihFilter === "" || tarihFormatted === tarihFilter;
+
+                if (malzemeMatch && tarihMatch) {
+                    $(this).show();
+                } else {
+                    $(this).hide();
+                }
+            });
+        });
+
+    });
+</script>

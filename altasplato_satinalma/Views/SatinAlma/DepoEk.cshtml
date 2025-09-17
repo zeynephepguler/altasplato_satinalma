@@ -1,0 +1,274 @@
+﻿@{
+    ViewData["Title"] = "Depo";
+}
+@* Uncomment this line if you intend to use a specific layout *@
+@* @{
+    Layout = "~/Views/Shared/_LayoutS.cshtml";
+} *@
+@Html.Partial("_SASidebar")
+
+<div class="container mt-5">
+    <h2 class="text-center">Depoya Ürün Ekle</h2>
+
+    <form asp-action="DepoUrunEkle" method="post" class="form-horizontal" enctype="multipart/form-data">
+        <!-- Product Selection -->
+        <div class="mb-3">
+            <label for="UrunAdi" class="form-label">Ürün Adı</label>
+            <select class="form-control" id="UrunAdi" name="UrunAdi" required>
+                <option value="" disabled selected>Seçiniz</option>
+                @if (ViewBag.siparis != null)
+                {
+                    // Eğer siparişler varsa
+                    @foreach (var urun in ViewBag.siparis)
+                    {
+                        if (urun != null)
+                        {
+                            <option value="@urun.UrunAdi">@urun.UrunAdi</option>
+                        }
+                    }
+                }
+                else
+                {
+                    // Sipariş yoksa, kullanıcıya mesaj göster
+                    <option value="">Faturası Kesilen Sipariş Yok</option>
+                }
+            </select>
+
+        </div>
+
+        <!-- Supplier and Product Details -->
+        <div class="mb-3">
+            <label for="TedarikciId" class="form-label">Tedarikçi</label>
+            <input type="text" class="form-control" id="TedarikciId" name="TedarikciAdi">
+        </div>
+
+        <!-- Category Selection -->
+        <div class="mb-3">
+            <label for="productCategory" class="form-label"><i class="fas fa-list"></i> Kategori</label>
+            <select class="form-select" id="productCategory" name="Kategori" required>
+                <option value="">Kategori seçiniz</option>
+
+                <optgroup label="Genel Kategoriler">
+                    <option value="Makine ve Takım Ekipmanları">Makine ve Takım Ekipmanları</option>
+                    <option value="Hammadde ve Üretim Malzemeleri">Hammadde ve Üretim Malzemeleri</option>
+                    <option value="Ambalaj ve Sarf Malzemeleri">Ambalaj ve Sarf Malzemeleri</option>
+                    <option value="Koruyucu ve İzolasyon Malzemeleri">Koruyucu ve İzolasyon Malzemeleri</option>
+                    <option value="Montaj ve Tespit Malzemeleri">Montaj ve Tespit Malzemeleri</option>
+                    <option value="Büro ve İdari Malzemeler">Büro ve İdari Malzemeler</option>
+                    <option value="Temizlik ve Bakım Ürünleri">Temizlik ve Bakım Ürünleri</option>
+                    <option value="Özel ve Teknik Malzemeler">Özel ve Teknik Malzemeler</option>
+                    <option value="Tahta Parçalar">Tahta Parçalar</option>
+                    <option value="Diğer">Diğer</option>
+
+
+                </optgroup>
+
+
+            </select>
+        </div>
+
+        <div class="mb-3">
+@*             <label for="BirimFiyat" class="form-label">Birim Fiyatı</label>
+ *@            <input type="hidden"  class="form-control" id="BirimFiyat" name="BirimFiyat">
+        </div>
+
+        <!-- Product Quantity -->
+       
+        <!-- Date Fields -->
+        <div class="mb-3">
+            <label for="SiparisOnayTarihi" class="form-label">Sipariş Onay Tarihi</label>
+            <input type="date" class="form-control" id="SiparisOnayTarihi" name="SiparisOnayTarihi" >
+        </div>
+
+        <div class="mb-3">
+            <label for="SiparisTerminTarihi" class="form-label">Sipariş Termin Tarihi</label>
+            <input type="date" class="form-control" id="SiparisTerminTarihi" name="SiparisTerminTarihi" >
+        </div>
+
+        <div class="mb-3">
+            <label for="UrunGelisTarihi" class="form-label">Ürün Geliş Tarihi</label>
+            <input type="date" class="form-control" id="UrunGelisTarihi" name="UrunGelisTarihi" required>
+        </div>
+        <div class="mb-3">
+            <label for="SiparisUrunAdedi" class="form-label">Siparis Urun Miktarı</label>
+            <input type="text" class="form-control" id="SiparisUrunAdedi" name="SiparisUrunAdedi">
+        </div>
+        <div class="mb-3">
+            <label for="GelenUrunMiktari" class="form-label">Gelen Ürün Miktarı</label>
+            <input type="number" class="form-control" id="GelenUrunMiktari" name="GelenUrunMiktari" required>
+        </div>
+        <!-- Additional Fields -->
+        <div class="mb-3">
+            <label for="KontrolEden" class="form-label">Kontrol Eden</label>
+            <input type="text" class="form-control" id="KontrolEden" name="KontrolEden">
+        </div>
+        <div class="mb-3">
+            <label for="Konum" class="form-label">Konum</label>
+            <input type="text" class="form-control" id="Konum" name="Konum" value="DEPO">
+        </div>
+        <div class="mb-3">
+            <label for="Aciklama" class="form-label">Açıklama :</label>
+            <input type="text" class="form-control" id="Aciklama" name="Aciklama" placeholder="Siparişin geliş durumunu belirtiniz." requred>
+        </div>
+        <div class="mb-3">
+            <input type="hidden" class="form-control" id="SiparisID" name="SiparisID">
+        </div>
+        <div class="mb-3">
+            <label for="Karar" class="form-label">Karar</label>
+            <select class="form-control" id="Karar" name="Karar" required>
+                <option value="" disabled selected>Seçiniz</option>
+                <option value="KABUL">KABUL</option>
+                <option value="REDDEDILDI">REDDEDİLDİ</option>
+            </select>
+        </div>
+        <label for="Foto">Fotoğraf Yükle:</label>
+        <input type="file" name="Foto" id="Foto" accept="image/*" />
+        <!-- Submit Button -->
+        <div class="text-center">
+            <button type="submit" class="btn btn-primary">Ürün Ekle</button>
+        </div>
+    </form>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const urunAdiSelect = document.getElementById('UrunAdi');
+
+        urunAdiSelect.addEventListener('change', () => {
+            const urunAdi = urunAdiSelect.value;
+
+            console.log('Seçilen Ürün Adı:', urunAdi);
+
+            if (urunAdi) {
+               fetch('@Url.Action("GetUrunDetaylari", "SatinAlma")?runAdi=' + encodeURIComponent(urunAdi))
+                    .then(response => {
+                        console.log('Fetch Response:', response);
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status}`);
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        console.log('Gelen JSON Verisi:', data);
+
+                        if (data) {
+                            const tedarikci = document.getElementById('TedarikciId');
+                            const kategori = document.getElementById('productCategory');
+                            const birimFiyat = document.getElementById('BirimFiyat');
+
+                            if (tedarikci) {
+                                tedarikci.value = data.tedarikci ? data.tedarikci.toString() : '';
+                                console.log('Tedarikçi Set:',tedarikci.value); // Kontrol edin
+                            }
+                            if (kategori) {
+                                kategori.value = data.kategori;
+                                console.log('Kategori Set:', kategori.value); // Kontrol edin
+
+                            }
+                           
+                        } else {
+                            console.warn('Boş JSON döndü:', data);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Fetch Hatası:', error); // Fetch sırasında oluşan hataları yakalayın
+                    });
+            } else {
+               
+            }
+
+        });
+    });
+</script>
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const urunAdiSelect = document.getElementById('UrunAdi');
+
+        urunAdiSelect.addEventListener('change', () => {
+            const urunAdi = urunAdiSelect.value;
+
+            console.log('Seçilen Ürün Adı:', urunAdi);
+
+            if (urunAdi) {
+    fetch('@Url.Action("GetSiparisDetaylari", "SatinAlma")?urunAdi=' + encodeURIComponent(urunAdi))
+                        .then(response => {
+                        console.log('Fetch Response:', response);
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status}`);
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        console.log('Gelen JSON Verisi:', data);
+
+                        if (data) {
+                            const siparisID = document.getElementById('SiparisID');
+                            const siparisTarihi = document.getElementById('SiparisOnayTarihi');
+                            const siparisTerminTarihi = document.getElementById('SiparisTerminTarihi');
+                            const onayDurumu = document.getElementById('OnayDurumu');
+                            const konum = document.getElementById('Konum');
+                            const urunAdedi = document.getElementById('SiparisUrunAdedi');
+                            const birimFiyat = document.getElementById('BirimFiyat');
+                           // siparisID ataması kontrolü
+                            if (siparisID ) {
+                                siparisID.value = data.siparisID;
+                                    siparisID.readOnly = true;
+
+                                console.log('siparisID Durumu Set:', siparisID.value); // Kontrol edin
+                            }
+                             if (birimFiyat ) {
+                                birimFiyat.value = data.birimFiyat;
+
+                                console.log('birimFiyat Durumu Set:', birimFiyat.value); // Kontrol edin
+                            }
+
+                            if (siparisTarihi && data.siparisTarihi) {
+                                let formattedDate = data.siparisTarihi.substring(0, 10);
+                                siparisTarihi.value = formattedDate;
+                                    siparisTarihi.readOnly = true;
+
+                                console.log('Sipariş Tarihi Set:', siparisTarihi.value);
+                            }
+
+                            if (siparisTerminTarihi && data.siparisTerminTarihi) {
+                                let formattedDate = data.siparisTerminTarihi.substring(0, 10);
+                                siparisTerminTarihi.value = formattedDate;
+                                    siparisTerminTarihi.readOnly = true;
+
+                                console.log('Sipariş Termin Tarihi Set:', siparisTerminTarihi.value);
+                            }
+
+                            if (onayDurumu) {
+                                onayDurumu.value = data.onayDurumu;
+
+                                console.log('Onay Durumu Set:', onayDurumu.value); // Kontrol edin
+                            }
+
+                            // if (konum) {
+                            //     konum.value = data.konum;
+
+                            //     console.log('Konum Set:', konum.value); // Kontrol edin
+                            // }
+
+                            if (urunAdedi) {
+                                urunAdedi.value = data.urunAdedi;
+                                    urunAdedi.readOnly = true;
+
+                                console.log('Ürün Adedi Set:', urunAdedi.value); // Kontrol edin
+                            }
+
+                        } else {
+                            console.warn('Boş JSON döndü:', data);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Fetch Hatası:', error); // Fetch sırasında oluşan hataları yakalayın
+                    });
+            } else {
+                
+                console.warn('Ürün adı seçilmedi');
+            }
+        });
+    });
+
+</script>

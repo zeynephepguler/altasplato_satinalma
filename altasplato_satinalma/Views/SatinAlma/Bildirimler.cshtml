@@ -1,0 +1,76 @@
+﻿@{
+    ViewData["Title"] = "Bildirimler";
+}
+@* @{
+    Layout = "~/Views/Shared/_LayoutS.cshtml";
+} *@
+@Html.Partial("_SASidebar")
+<style>
+    .notification-item {
+        padding: 15px;
+        border-bottom: 1px solid #ddd;
+        display: flex;
+        justify-content: space-between;
+    }
+
+        .notification-item.unread {
+            background-color: #f7f7f7;
+            font-weight: bold;
+        }
+
+    .notification-message {
+        flex: 1;
+    }
+
+    .notification-date {
+        margin-right: 15px; /* Adjust the value as needed */
+        color: #6c757d;
+    }
+
+    .mark-read {
+        color: #007bff;
+        cursor: pointer;
+    }
+</style>
+<div class="container mt-5">
+    <h1 class="mb-4">Bildirimler</h1>
+
+    <!-- Notification List -->
+    <div class="notification-list">
+        @foreach (var notification in Model)
+        {
+            <div class="notification-item @(notification.Okundu ? "" : "unread")">
+                <div class="notification-message">
+                    @notification.Mesaj
+                </div>
+                <div class="notification-date">
+                    @notification.OlusturmaTarihi.ToString("dd MMM yyyy HH:mm")
+                </div>
+                @if (!notification.Okundu)
+                {
+                    <span class="mark-read" onclick="markAsRead(@notification.Id)">  Okundu olarak işaretle</span>
+                }
+            </div>
+        }
+    </div>
+
+</div>
+
+<script>
+    function markAsRead(notificationId) {
+        // Make an AJAX call to mark the notification as read
+        fetch(`/SatinAlma/OkunduYap/${notificationId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
+        .then(response => {
+            if (response.ok) {
+                location.reload();  // Reload the page to update the list
+            } else {
+                alert('Bir hata oluştu.');
+            }
+        });
+    }
+</script>

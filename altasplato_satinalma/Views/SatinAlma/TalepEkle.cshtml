@@ -1,0 +1,50 @@
+﻿@{
+    ViewData["Title"] = "Talep Ekle";
+}
+@* @{
+    Layout = "~/Views/Shared/_LayoutS.cshtml";
+} *@
+@Html.Partial("_SASidebar")
+
+@model dynamic
+<div class="mt-4">
+    <h4>Yeni Talep Oluştur</h4>
+    <form id="talepForm" asp-action="TalepEklePost" asp-route-TedarikciId="@Model.Tedarikci" method="post" class="form-horizontal">
+
+
+
+        <div class="mb-3">
+            <label for="TalepTarihi" class="form-label">Talep Tarihi</label>
+            <input type="date" class="form-control" id="TalepTarihi" name="TalepTarihi" required>
+        </div>
+        <div class="mb-3">
+            <label for="TalepEdenBolum" class="form-label">Talep Eden Bölüm</label>
+            <input type="text" class="form-control" id="TalepEdenBolum" name="TalepEdenBolum" maxlength="100" required>
+        </div>
+        <div class="mb-3">
+            <label for="TalepEdilenUrun" class="form-label">Talep Edilen Ürün</label>
+            <input type="text" class="form-control" id="TalepEdilenUrun" name="TalepEdilenUrun" readonly required value="@Model.UrunAdi" />
+        </div>
+        <div class="mb-3">
+            <label for="UrunKodu" class="form-label">Ürün Kodu</label>
+            <input type="text" class="form-control" id="UrunKodu" name="UrunKodu" readonly required value="@Model.UrunKodu">
+        </div>
+        <div class="mb-3">
+            <label for="Birim" class="form-label">Birim</label>
+            <input type="text" class="form-control" id="Birim" name="Birim" required value="@Model.Birim">
+        </div>
+        <div class="mb-3">
+            <label for="TalepEdilenMiktar" class="form-label">Talep Edilen Miktar</label>
+            <input type="number" class="form-control" id="TalepEdilenMiktar" name="TalepEdilenMiktar" required>
+        </div>
+        <div class="d-flex justify-content-between">
+            <input type="hidden" name="aciklama" value="@Model.Aciklama" />
+            <button type="submit" class="btn btn-primary">Kaydet</button>
+            <a asp-action="Talep" class="btn btn-secondary">Geri Dön</a>
+        </div>
+    </form>
+</div>
+
+
+   
+

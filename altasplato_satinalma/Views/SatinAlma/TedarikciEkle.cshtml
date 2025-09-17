@@ -1,0 +1,41 @@
+﻿@{
+    ViewData["Title"] = "Tedarikçi Ekle";
+}
+@* @{
+    Layout = "~/Views/Shared/_LayoutS.cshtml";
+} *@
+@Html.Partial("_SASidebar")
+
+
+<div class="container mt-5">
+    <h2 class="text-center">Tedarikçi Ekle</h2>
+
+    <form asp-action="TedarikciAdd" method="post" class="form-horizontal">
+        <div class="mb-3">
+            <label for="TedarikciAdi" class="form-label">Tedarikçi Adı</label>
+            <input type="text" class="form-control" id="TedarikciAdi" name="TedarikciAdi" required>
+        </div>
+        <div class="mb-3">
+            <label for="TedarikciTelefon" class="form-label">Telefon</label>
+            <input type="number" class="form-control" id="TedarikciTelefon" name="TedarikciTelefon">
+        </div>
+        <div class="mb-3">
+            <label for="TedarikciMail" class="form-label">Mail</label>
+            <input type="text" class="form-control" id="TedarikciMail" name="TedarikciMail">
+        </div>
+        <div class="mb-3">
+            <label for="TedarikciAdres" class="form-label">Adres</label>
+            <textarea class="form-control" id="TedarikciAdres" name="TedarikciAdres" rows="3"></textarea>
+        </div><div class="mb-3">
+            <label for="TedarikciNot" class="form-label">Not</label>
+            <textarea class="form-control" id="TedarikciNot" name="TedarikciNot" rows="2"></textarea>
+        </div>
+        <div class="d-flex justify-content-between">
+            <button type="submit" class="btn btn-primary">Kaydet</button>
+            <a asp-action="TedarikciYonetim" class="btn btn-secondary">Geri Dön</a>
+        </div>
+    </form>
+
+</div>
+
+

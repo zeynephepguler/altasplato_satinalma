@@ -1,0 +1,29 @@
+﻿@{
+    ViewData["Title"] = "Satın Alma";
+}
+@* @{
+    Layout = "~/Views/Shared/_LayoutS.cshtml";
+} *@
+@Html.Partial("_SASidebar")
+
+
+<div class="card shadow-lg border-0">
+    <div class="card-header bg-light text-center">
+    </div>
+    <div class="card-body bg-light d-flex flex-column align-items-center justify-content-center" style="height: 300px;">
+       
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-danger text-bg-danger" style="width: 100%; text-align: center;">
+                @TempData["Error"]
+            </div>
+        }
+        @if (TempData["Message"] != null)
+        {
+            <div class="alert alert-success " style="width: 100%; text-align: center;">
+                @TempData["Message"]
+            </div>
+        }
+    </div>
+
+</div>

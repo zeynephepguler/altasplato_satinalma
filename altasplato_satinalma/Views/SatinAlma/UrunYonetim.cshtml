@@ -1,0 +1,206 @@
+﻿@{
+    ViewData["Title"] = "Ürün Yönetimi";
+}
+@Html.Partial("_SASidebar")
+
+    <h2 class="mb-4 text-center" style="color: #212d3d;"><i class="fas fa-boxes"></i> Ürün Yönetimi</h2>
+
+    <!-- Yeni Ürün Ekleme Butonu -->
+    <div class="mb-4 text-end">
+        <a asp-action="UrunEkle" class="btn btn-success" style="background-color: #27ae60; border: none; color: #ffffff;">
+            <i class="fas fa-plus"></i> Yeni Ürün Ekle
+        </a>
+    </div>
+<div class="col-md-3">
+    <input type="text" id="malzemeAdiFilter" class="form-control" placeholder="Malzeme Adına Göre Ara" />
+</div>
+
+
+<div class="table-responsive">
+    <table class="table table-bordered table-hover" style="background-color: #ffffff;">
+        <thead style="background-color: #212d3d; color: #ffffff;">
+            <tr>
+                <th> + </th>
+                <th><i class="fas fa-hashtag"></i> Ürün Kodu</th>
+                <th><i class="fas fa-box"></i> Ürün Adı</th>
+                <th><i class="fas fa-tags"></i> Kategori</th>
+                <th><i class="fas fa-tags"></i> Açıklama</th>
+                <th><i class="fas fa-layer-group"></i> Stok Miktarı</th>
+                <th><i class="fas fa-balance-scale"></i> Birim Fiyat</th>
+                <th><i class="fas fa-user-tie"></i> Urun Kartı</th>
+                <th>Min Stok</th>
+            </tr>
+        </thead>
+        <tbody id="productTable" style="color: #212d3d;">
+            @foreach (var urun in Model)
+            {
+                <tr id="row_@urun.UrunID" class="product-row" data-stok="@urun.ToplamStok" data-minstok="@urun.MinStok">
+                    <td>
+                        
+                            <a asp-action="UrunGecmis" asp-route-urunId="@urun.UrunKodu" class="btn btn-success" style="background-color: darkred; border: none; color: #ffffff;">
+                            <i class="fas fa-plus" style="margin-right: 4px;"></i>
+                            </a>
+                       
+                    </td>
+                    <td>@urun.UrunKodu</td>
+                    <td>@urun.UrunAdi</td>
+                    <td>@urun.Kategori</td>
+                    <td>@urun.Aciklama</td>
+                    <td>@urun.ToplamStok</td>
+                    <td>@urun.BirimFiyati</td>
+                    <td>@urun.UrunKart</td>
+                    <td>
+                        <input type="number" name="minStok" value="@urun.MinStok" placeholder="@urun.MinStok" id="minStok_@urun.UrunID" />
+                        <i class="fas fa-check" style="font-size: 20px; cursor: pointer;" onclick="checkFunction(@urun.UrunID)"></i>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+   
+
+<script>
+         document.querySelectorAll('.assign-supplier').forEach(button => {
+        button.addEventListener('click', function() {
+            const row = this.closest('tr');
+            const productId = row.cells[0].textContent;
+            const newSupplier = row.querySelector('input').value;
+
+            console.log('Ürün ID:', productId);  // Debugging: Ürün ID'sini kontrol et
+            console.log('Yeni Tedarikçi:', newSupplier);  // Debugging: Yeni tedarikçiyi kontrol et
+
+            if (newSupplier.trim() === '') {
+                showMessage('Lütfen bir tedarikçi adı girin.', 'danger');
+                return;
+            }
+
+            // Backend'e gönderim
+            fetch('@Url.Action("tAta", "SatinAlma")', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    yTedarikci: newSupplier,
+                    id: productId
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Backend Yanıtı:', data);  // Debugging: Backend'den gelen yanıtı kontrol et
+
+                if (data.success) {
+                    // Başarı mesajı göster
+                    showMessage(`Tedarikçi başarıyla atandı: ${newSupplier}`, 'success');
+                    // Tedarikçiyi güncelle
+                    row.cells[5].textContent = newSupplier;
+                    row.querySelector('input').value = '';  // Input alanını temizle
+                } else {
+                    // Hata mesajı göster
+                    showMessage(data.message, 'danger');
+                }
+            })
+            .catch(error => {
+                // Hata durumunda yapılacak işlemler
+                showMessage('Bir hata oluştu. Lütfen tekrar deneyin.', 'danger');
+                console.error('Hata:', error);
+            });
+        });
+    });
+
+
+    // Mesaj Gösterme
+    function showMessage(message, type) {
+        const statusMessage = document.getElementById('statusMessage');
+        statusMessage.textContent = message;
+        statusMessage.className = `alert alert-${type}`;
+        statusMessage.classList.remove('d-none');
+
+        setTimeout(() => {
+            statusMessage.classList.add('d-none');
+        }, 3000);
+    }
+
+</script>
+<script>
+    // Satırları Kontrol Et ve Rengi Güncelle
+    function updateRowColors() {
+        const rows = document.querySelectorAll('.product-row');
+        rows.forEach(row => {
+            const stok = parseFloat(row.dataset.stok);
+            const minStok = parseFloat(row.dataset.minstok);
+
+           if (stok < minStok) {
+            row.style.backgroundColor = '#ffcccc'; // Kırmızı renk (stok min stoktan az)
+        } else if (stok === minStok) {
+            row.style.backgroundColor = '#fff3cd'; // Sarı renk (stok min stoğa eşit)
+        } else {
+            row.style.backgroundColor = '#d4edda'; // Varsayılan renk (stok min stoktan fazla)
+        }
+        });
+    }
+
+    // Sayfa Yüklendiğinde Kontrol Yap
+    document.addEventListener('DOMContentLoaded', updateRowColors);
+
+    // AJAX ile Min Stok Güncellemesi Sonrası Satırı Yeniden Kontrol Et
+    function checkFunction(urunId) {
+        const inputElement = document.getElementById(`minStok_${urunId}`);
+        const minStokValue = inputElement.value;
+
+        $.ajax({
+            url: '@Url.Action("KytMinStok", "SatinAlma")',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({ id: urunId, minStok: minStokValue }),
+            success: function (response) {
+                if (response.success) {
+                    alert('Stok değeri başarıyla kaydedildi.');
+                    // Min stok değerini satırın data attribute'üne güncelle
+                    const row = document.getElementById(`row_${urunId}`);
+                    row.dataset.minstok = minStokValue;
+
+                    // Renk kontrolünü yeniden yap
+                    updateRowColors();
+                } else {
+                    alert('Bir hata oluştu: ' + response.message);
+                }
+            },
+            error: function () {
+                alert('Kaydetme işlemi sırasında bir hata oluştu.');
+            }
+        });
+    }
+</script>
+
+<script>
+    $(document).ready(function () {
+
+        // ... mevcut kodlarınız (btnTeklifBekle vb.)
+
+        // Filtre inputlarına event ekle
+        $('#malzemeAdiFilter').on('input change', function () {
+            var malzemeFilter = $('#malzemeAdiFilter').val().toLowerCase();
+            
+
+            $('table tbody tr').each(function () {
+                var malzemeAdi = $(this).find('td').eq(2).text().toLowerCase(); // 3. sütun: Malzeme Adı
+                 // 2. sütun: Tarih (dd.MM.yyyy formatında)
+
+               
+
+                var malzemeMatch = malzemeAdi.indexOf(malzemeFilter) !== -1;
+                
+
+                if (malzemeMatch) {
+                    $(this).show();
+                } else {
+                    $(this).hide();
+                }
+            });
+        });
+
+    });
+</script>

@@ -1,0 +1,236 @@
+﻿@using static altasplato_satinalma.Controllers.SatinAlma
+
+@{
+    ViewData["Title"] = "Depo";
+}
+@Html.Partial("_SASidebar")
+@model IEnumerable<altasplato_satinalma.Models.SatinAlmaSiparis>
+
+
+<div class="card text-center mb-4">
+    <div class="card-header">
+        <h1 class="text-dark"><i class="fas fa-file-invoice"></i> Raporlar</h1>
+    </div>
+    <div class="card-body">
+        <!-- You can add any additional content here if necessary, but it is optional for now. -->
+    </div>
+</div>
+<!-- Depo Ürün Listesi -->
+<div class="container mt-5">
+    <h2 class="text-center text-dark mb-4" style="font-size: 2rem;"><i class="fas fa-chart-line"></i> Satin Alma Raporu - Hesaplamalar</h2>
+
+    <!-- Siparişler Summary -->
+    <div class="row report-section">
+        <div class="col-md-4">
+            <h2 class="text-primary text-center" style="font-size: 1.5rem;"><i class="fas fa-boxes"></i> Siparişler Tablosu</h2>
+            <table class="table table-bordered">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>Total Ürün Adedi</th>
+                        <th>Total Sipariş Miktarı</th>
+                        <th>Ortalama Fiyat</th>
+                        <th>Toplam Sipariş Tutarı</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td id="total-urun-adedi">0</td>
+                        <td id="total-siparis-miktari">0</td>
+                        <td id="average-price">0</td>
+                        <td id="total-siparis-tutari">0</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Ürün Bilgileri Summary -->
+        <div class="col-md-4">
+            <h2 class="text-primary text-center" style="font-size: 1.5rem;"><i class="fas fa-cogs"></i> Ürün  Tablosu</h2>
+            <table class="table table-bordered">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>Total Stok Miktarı</th>
+                        <th>Ortalama Birim Fiyatı</th>
+                        <th>Toplam Değer</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td id="total-stok-miktari">0</td>
+                        <td id="average-birim-fiyati">0</td>
+                        <td id="total-deger">0</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Depo Bilgileri Summary -->
+        <div class="col-md-4">
+            <h2 class="text-primary text-center" style="font-size: 1.5rem;"><i class="fas fa-warehouse"></i> Depo  Tablosu</h2>
+            <table class="table table-bordered">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>Total Kalan Adet</th>
+                        <th>Toplam Sipariş Onay Tutarı</th>
+                        <th>Gelen Ürün Miktarı</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td id="total-kalan-adet">0</td>
+                        <td id="total-siparis-onay-tutari">0</td>
+                        <td id="total-gelen-urun-miktari">0</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="container mt-5">
+
+        <!-- Siparişler Summary -->
+        <div class="row report-section">
+            <!-- Existing sections for Siparişler, Ürün Bilgileri, and Depo Bilgileri -->
+            <!-- Weekly and Monthly Reports Summary -->
+            <div class="col-md-4">
+                <h2 class="text-primary text-center" style="font-size: 1.5rem;"><i class="fas fa-calendar-week"></i> Haftalık ve Aylık Satın Alma Tablosu</h2>
+                <table class="table table-bordered">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>Haftalık Toplam Maliyet</th>
+                            <th>Aylık Toplam Maliyet</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td id="weekly-cost">0</td>
+                            <td id="monthly-cost">0</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Depo Ürün ve Tedarikçi Bilgileri Summary -->
+            <div class="col-md-4">
+                <h2 class="text-primary text-center" style="font-size: 1.5rem;"><i class="fas fa-truck"></i> Depo Ürün ve Tedarikçi Tablosu</h2>
+                <table class="table table-bordered">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>Gelen Ürün (Aylık)</th>
+                            <th>Kalan Ürün (Aylık)</th>
+                            <th>En Çok Kullanılan Tedarikçiler</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td id="monthly-received">0</td>
+                            <td id="monthly-remaining">0</td>
+                            <td id="top-suppliers">-</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Calculate and Reset Buttons -->
+        <div class="text-center mt-4">
+            <button class="btn btn-success" onclick="calculateReport()">Hesapla</button>
+            <button class="btn btn-danger" onclick="resetReport()">Sıfırla</button>
+        </div>
+    </div>
+
+</div>
+
+<footer class="text-center mt-5 text-muted">
+    <p>&copy; 2025 Altas PLATO </p>
+</footer>
+
+<script>
+       function calculateReport() {
+        // Sample data for the new sections
+        const satinAlmaSiparisler = [
+            { UrunAdedi: 10, BirimFiyati: 50, SiparisTutar: 500 },
+            { UrunAdedi: 20, BirimFiyati: 30, SiparisTutar: 600 },
+            { UrunAdedi: 5, BirimFiyati: 100, SiparisTutar: 500 }
+        ];
+
+        const satinAlmaUrunBilgileris = [
+            { StokMiktari: 100, BirimFiyati: 50 },
+            { StokMiktari: 200, BirimFiyati: 30 },
+            { StokMiktari: 150, BirimFiyati: 40 }
+        ];
+
+        const satinAlmaDepos = [
+            { KalanAdet: 20, SiparisOnayTutar: 1000, GelenUrunMiktari: 30 },
+            { KalanAdet: 50, SiparisOnayTutar: 1500, GelenUrunMiktari: 40 }
+        ];
+
+        // Existing calculations for Siparişler, Ürün Bilgileri, and Depo Bilgileri
+        const totalUrunAdedi = satinAlmaSiparisler.reduce((sum, item) => sum + item.UrunAdedi, 0);
+        const totalSiparisMiktari = satinAlmaSiparisler.reduce((sum, item) => sum + item.SiparisTutar, 0);
+        const averagePrice = totalSiparisMiktari / totalUrunAdedi;
+        const totalSiparisTutari = totalSiparisMiktari;
+
+        const totalStokMiktari = satinAlmaUrunBilgileris.reduce((sum, item) => sum + item.StokMiktari, 0);
+        const averageBirimFiyati = satinAlmaUrunBilgileris.reduce((sum, item) => sum + item.BirimFiyati, 0) / satinAlmaUrunBilgileris.length;
+        const totalDeger = satinAlmaUrunBilgileris.reduce((sum, item) => sum + item.StokMiktari * item.BirimFiyati, 0);
+
+        const totalKalanAdet = satinAlmaDepos.reduce((sum, item) => sum + item.KalanAdet, 0);
+        const totalSiparisOnayTutari = satinAlmaDepos.reduce((sum, item) => sum + item.SiparisOnayTutar, 0);
+        const totalGelenUrunMiktari = satinAlmaDepos.reduce((sum, item) => sum + item.GelenUrunMiktari, 0);
+
+        // New report calculations
+        const weeklyCost = 1200; // Sample value for weekly cost
+        const monthlyCost = 5000; // Sample value for monthly cost
+        const monthlyReceived = 70; // Sample value for monthly received products
+        const monthlyRemaining = 50; // Sample value for monthly remaining products
+
+        // Example of top suppliers data (can be dynamically fetched from a supplier list)
+        const topSuppliers = "Supplier A, Supplier B, Supplier C";
+
+        // Update tables with new values
+        document.getElementById('weekly-cost').textContent = weeklyCost;
+        document.getElementById('monthly-cost').textContent = monthlyCost;
+
+        document.getElementById('monthly-received').textContent = monthlyReceived;
+        document.getElementById('monthly-remaining').textContent = monthlyRemaining;
+        document.getElementById('top-suppliers').textContent = topSuppliers;
+
+        // Update existing report tables as before...
+        document.getElementById('total-urun-adedi').textContent = totalUrunAdedi;
+        document.getElementById('total-siparis-miktari').textContent = totalSiparisMiktari;
+        document.getElementById('average-price').textContent = averagePrice.toFixed(2);
+        document.getElementById('total-siparis-tutari').textContent = totalSiparisTutari;
+
+        document.getElementById('total-stok-miktari').textContent = totalStokMiktari;
+        document.getElementById('average-birim-fiyati').textContent = averageBirimFiyati.toFixed(2);
+        document.getElementById('total-deger').textContent = totalDeger.toFixed(2);
+
+        document.getElementById('total-kalan-adet').textContent = totalKalanAdet;
+        document.getElementById('total-siparis-onay-tutari').textContent = totalSiparisOnayTutari;
+        document.getElementById('total-gelen-urun-miktari').textContent = totalGelenUrunMiktari;
+    }
+
+    function resetReport() {
+        // Reset all values to 0 or empty
+        document.getElementById('weekly-cost').textContent = '0';
+        document.getElementById('monthly-cost').textContent = '0';
+        document.getElementById('monthly-received').textContent = '0';
+        document.getElementById('monthly-remaining').textContent = '0';
+        document.getElementById('top-suppliers').textContent = '-';
+
+        // Reset other report values as before...
+        document.getElementById('total-urun-adedi').textContent = '0';
+        document.getElementById('total-siparis-miktari').textContent = '0';
+        document.getElementById('average-price').textContent = '0';
+        document.getElementById('total-siparis-tutari').textContent = '0';
+
+        document.getElementById('total-stok-miktari').textContent = '0';
+        document.getElementById('average-birim-fiyati').textContent = '0';
+        document.getElementById('total-deger').textContent = '0';
+
+        document.getElementById('total-kalan-adet').textContent = '0';
+        document.getElementById('total-siparis-onay-tutari').textContent = '0';
+        document.getElementById('total-gelen-urun-miktari').textContent = '0';
+    }
+
+</script>

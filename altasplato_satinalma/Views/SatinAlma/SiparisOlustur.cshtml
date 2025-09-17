@@ -1,0 +1,153 @@
+﻿@{
+    ViewData["Title"] = "Sipariş Oluştur";
+}
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+@Html.Partial("_SASidebar")
+
+<title>Sipariş Ekleme Formu</title>
+
+<!-- Bootstrap 5 CDN -->
+
+<div class="container mt-5">
+    <h2 class="text-center">Sipariş Ekleme Formu</h2>
+
+    <form asp-action="SiparisEkle" method="POST" enctype="multipart/form-data" class="mt-4">
+        <div class="row">
+            <!-- Talep ID (Sol) -->
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label for="TalepID" class="form-label">Talep ID:</label>
+                    <input type="text" class="form-control" id="TalepID" name="TalepID" value="@Model.TalepID" required>
+                </div>
+            </div>
+
+            <!-- Ürün Adı (Sağ) -->
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label for="UrunAdi" class="form-label">Ürün Adı:</label>
+                    <select class="form-control" id="UrunAdi" name="UrunAdi" required>
+                        <option value="">Ürün Seçiniz</option>
+                        @foreach (var urun in ViewBag.Urunler  )
+                        {
+                            <option value="@urun.Text">@urun.Text</option>
+                        }
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label for="TedarikciAdi" class="form-label">Tedarikci Adı:</label>
+                    <input type="text" class="form-control" id="TedarikciAdi" name="TedarikciAdi" required>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label for="BirimFiyat" class="form-label">Birim Fiyatı</label>
+                    <input type="text" class="form-control" id="BirimFiyat" name="BirimFiyat">
+                </div>
+            </div>
+        
+        </div>
+        
+         
+        <div class="row">
+            <!-- Ürün Adedi (Sol) -->
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label for="UrunAdedi" class="form-label">Ürün Adedi:</label>
+                    <input type="text" class="form-control" id="UrunAdedi" name="UrunAdedi" required>
+                </div>
+            </div>
+
+            <!-- Sipariş Tarihi (Sağ) -->
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label for="SiparisTarihi" class="form-label">Sipariş Tarihi:</label>
+                    <input type="date" class="form-control" id="SiparisTarihi" name="SiparisTarihi" required>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Onay Durumu (Sol) -->
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label for="OnayDurumu" class="form-label">Onay Durumu:</label>
+                    <input type="text" class="form-control" id="OnayDurumu" name="OnayDurumu" value="Onaylandı" required readonly>
+
+                    @* <select id="OnayDurumu" name="OnayDurumu" class="form-select" required >
+                        <option value="Onaylandı">Onaylandı</option>
+                        <option value="Bekliyor">Bekliyor</option>
+                        <option value="Reddedildi">Reddedildi</option>
+                    </select> *@
+                </div>
+            </div>
+
+            <!-- Durum (Sağ) -->
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label for="Durum" class="form-label">Durum:</label>
+                    <input type="text" class="form-control" id="Durum" name="Durum" value="Sipariş Verildi" required>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Konum (Sol) -->
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label for="Konum" class="form-label">Konum:</label>
+                    <input type="text" class="form-control" id="Konum" name="Konum" value="FATURA KESİLDİ" required readonly>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label for="SiparisTerminTarihi" class="form-label">Sipariş Termin Tarihi:</label>
+                    <input type="date" class="form-control" id="SiparisTerminTarihi" name="SiparisTerminTarihi" required>
+                </div>
+            </div>
+            <!-- Gizli StokID (Sağ) -->
+            <input type="hidden" id="StokID" name="StokID" value="0">
+        </div>
+
+        <!-- Sipariş Notu -->
+        <div class="mb-3">
+            <label for="SiparisNotu" class="form-label">Sipariş Notu:</label>
+            <textarea class="form-control" id="SiparisNotu" name="SiparisNotu" value="-"></textarea>
+        </div>
+       
+        <!-- Dosya Yükleme -->
+        <div class="mb-3">
+            <label for="DosyaVerisi" class="form-label">Dosya Verisi (PDF veya Görsel):</label>
+            <input type="file" class="form-control" id="DosyaVerisi" name="DosyaVerisi" required>
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" class="btn btn-success w-100">Siparişi Kaydet</button>
+    </form>
+
+</div>
+
+
+<script>
+     document.getElementById("UrunAdi").addEventListener("change", function () {
+        var selectedUrun = this.value;  
+                             console.log("slc",selectedUrun );
+
+        var urunler = @Html.Raw(Json.Serialize(ViewBag.Urunler));  
+        console.log("urn",urunler);
+
+         var selectedProduct = urunler.find(urun => urun.text === selectedUrun);
+                     console.log("seelct",selectedProduct );
+
+         if (selectedProduct) {
+            document.getElementById("TedarikciAdi").value = selectedProduct.tedarikci;
+            console.log("ted",selectedProduct.tedarikci );
+        }
+
+
+    });
+</script>

@@ -1,0 +1,39 @@
+﻿ 
+
+
+<ul class="navbar-nav">
+ 
+        <div class="dropdown" style="background-color:#212d3d;">
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu2" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="fas fa-user-circle"></i>
+            </button>
+            <div class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenu2">
+                <a class="dropdown-item" type="button" id="manage" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">
+                 </a>
+                 
+            <li class="nav-item">
+                <a class="nav-link text-plato" asp-area="Admin" asp-controller="Admin" asp-action="Index">Admin Paneli</a>
+            </li>
+                 
+                <a class="dropdown-item d-flex align-items-center" type="button" asp-action="Profil" asp-controller="IsGe">
+                    <i class="fas fa-user me-2"></i> Profil
+                </a>
+            </div>
+        </div>
+
+
+    <li class="nav-item">
+        <form id="logoutForm" class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+            <button id="logout" type="submit" class="nav-link btn text-plato border-0">Logout</button>
+        </form>
+    </li>
+ 
+    <li class="nav-item">
+        <a class="nav-link text-plato " id="register" asp-area="Identity" asp-page="/Account/Register" >Admin</a>
+    </li>
+       
+    <li class="nav-item">
+        <a class="nav-link text-plato" id="login" asp-area="Identity" asp-page="/Account/Login">Giriş</a>
+    </li>
+ 
+</ul>

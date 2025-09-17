@@ -1,0 +1,74 @@
+﻿@using System.Xml
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - AltasPlato</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/altasplato_satinalma.styles.css" asp-append-version="true" />
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-plato bg-dark border-bottom box-shadow mb-3">
+            <div class="container-fluid">
+                <a class="navbar-brand text-light" asp-area="" asp-controller="Home" asp-action="Index">ALTAŞ</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                    <ul class="navbar-nav me-auto @* flex-grow-1 *@">
+                        <li class="nav-item">
+                            <a class="nav-link text-light" asp-area="" asp-controller="Home" asp-action="Index">--</a>
+                        </li>
+                    </ul>                       
+                        <partial name="_LoginPartial" />
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div class="container px-0">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="border-top footer text-muted bg-dark" >
+        <div class="container row flex-nowrap" >
+            <div>
+                &copy; 2023 - ALTAS Plato - <a asp-area="" asp-controller="Home" asp-action="Index">Digit 13</a>
+                @{
+                    String A = DateTime.Now.ToString();
+                    String TarihSaat = A.Remove(15, 3);
+                }
+                @TarihSaat
+            </div>
+            <div>
+                @{
+                const string todaytcmb = "https://www.tcmb.gov.tr/kurlar/today.xml";
+                var xmlDoc = new XmlDocument();
+                // xmlDoc.LoadXml(todaytcmb);
+                // DateTime exchangeDate = Convert.ToDateTime(xmlDoc.SelectSingleNode("//Tarih_Date").Attributes["Tarih"].Value);
+
+
+                // string UsdSatis = xmlDoc.SelectSingleNode("Tarih_Date/Currency [@Kod = 'USD']/BanknoteSelling").InnerXml;
+                // string EurSatis = xmlDoc.SelectSingleNode("Tarih_Date / Currency[@Kod = 'EUR'] / BanknoteSelling").InnerXml;
+                // string Parite = xmlDoc.SelectSingleNode("Tarih_Date/Currency [@Kod = 'EUR/USD']/BanknoteSelling").InnerXml;
+                }
+            
+               @*  USD/TRY: @* @UsdSatis 
+                EURO/TRY: @EurSatis
+                EURO/USD:  @Parite *@ 
+            </div>
+        
+           
+        </div>
+    </footer>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

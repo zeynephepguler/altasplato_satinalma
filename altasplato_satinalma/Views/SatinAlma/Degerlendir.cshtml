@@ -1,0 +1,438 @@
+﻿@using altasplato_satinalma.Models
+@{
+    ViewData["Title"] = "Degerlendir";
+}
+<style>
+    body {
+        font-size: 12px; /* Smaller font for the whole page */
+    }
+
+    p {
+        min-width: 200px;
+        min-height: 30px; /* Reduced height */
+        margin: 2px 0; /* Reduced margin */
+        padding: 2px 5px; /* Reduced padding */
+        text-align: left;
+        font-size: 12px; /* Smaller font */
+        line-height: 1.2; /* Reduced line height */
+        border: 1px solid #ddd;
+        border-radius: 4px;
+    }
+
+    .full-width {
+        width: 100%;
+        text-align: center;
+    }
+
+    .print-button {
+        margin: 15px;
+        padding: 8px 16px; /* Reduced button padding */
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 12px; /* Reduced button font size */
+    }
+
+        .print-button:hover {
+            background-color: #0056b3;
+        }
+
+    input, textarea {
+        width: 100%;
+        padding: 5px; /* Reduced padding */
+        margin: 3px 0; /* Reduced margin */
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 12px; /* Reduced font size */
+        height: 25px; /* Reduced height for input fields */
+    }
+
+    h3 {
+        font-size: 14px; /* Reduced font size for headings */
+        font-weight: bold;
+        color: #212D3D;
+    }
+
+    th {
+        background-color: #f8f9fa;
+        font-weight: bold;
+        font-size: 12px; /* Smaller font size for table headers */
+    }
+
+    td, th {
+        padding: 8px; /* Reduced padding */
+        text-align: left;
+        border: 1px solid #ddd;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .text-center {
+        text-align: center;
+    }
+
+    .alert {
+        font-size: 12px; /* Smaller alert font size */
+    }
+</style>
+
+<script>
+    function yazdir() {
+        // Tüm sayfayı gizle
+        var originalContents = document.body.innerHTML;
+
+        // Sadece yazdırılacak div'i almak
+        var printContents = document.getElementById('print-area').innerHTML;
+
+        // Sayfa içeriğini sadece yazdırılacak div ile değiştir
+        document.body.innerHTML = printContents;
+
+        // Yazdır
+        window.print();
+
+        // Yazdırma işlemi tamamlandıktan sonra sayfayı orijinal haline geri döndür
+        document.body.innerHTML = originalContents;
+    }
+</script>
+
+
+
+@model Degerlendir
+@Html.Partial("_SASidebar")
+@if (Model != null)
+{
+    <div id="print-area" class="card shadow-lg border-0">
+        <form method="post" asp-action="Dgrlendir" asp-route-itemid="@ViewBag.TedarikciId">
+            <div class="card-body">
+                <div class="row mb-4">
+                    
+                    <table style="width: 100%; border-collapse: collapse;">
+                        <tr>
+                            <td style="text-align: center; width: 30%;">
+                                <img src="~/AltasLogo.png" alt="ALTAS Aluminum" style="max-width: 200px;" />
+                            </td>
+                            <td style="text-align: center; width: 40%;">
+                                <h3 style="color: #212D3D;">İKİNCİNCİL TEDARİKÇİ DEĞERLENDİRME FORMU</h3>
+                            </td>
+                            <td style="width: 30%;">
+                                <small class="text-muted">Döküman No:</small>
+                                <input type="text" value="@Model.DokumanNo" name="DokumanNo" required />
+                                <input type="hidden" value="@ViewBag.TedarikciId" name="Id" required />
+
+                                <small class="text-muted">Revizyon No:</small>
+                                <input type="text" value="@Model.RevizyonNo" name="RevizyonNo" required />
+
+                                <small class="text-muted">Rev./Yayın Tarihi:</small>
+                                <input type="date" value="@Model.RevizyonTarihi?.ToString("yyyy-MM-dd")" name="RevizyonTarihi" required />
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td colspan="3" class="full-width">
+                                <label for="DegerlendirmeTarihi"><small class="text-muted">Değerlendirme Tarihi:</small></label>
+                                <input type="date" value="@Model.DegerlendirmeTarihi?.ToString("yyyy-MM-dd")" name="DegerlendirmeTarihi" value="@DateTime.Now.ToShortDateString()" required />
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+
+                <h3 class="mt-4">Dış Tedarikçi Bilgileri</h3>
+                <table style="width: 100%;">
+                    <tr><td>Adı:</td><td><input type="text" name="Adi" value="@Model.Adi" required /></td></tr>
+                    <tr><td>Telefon No:</td><td><input type="text" name="TelefonNo" value="@Model.TelefonNo" required /></td></tr>
+                    <tr><td>E-Posta:</td><td><input type="email" name="EPosta" value="@Model.EPosta" required /></td></tr>
+                    <tr><td>İlgili Kişi ve Görevi:</td><td><input type="text" name="IlgiliKisi" value="@Model.IlgiliKisi" required /></td></tr>
+                    <tr><td>Faaliyet Konusu:</td><td><input type="text" name="FaaliyetKonusu" value="@Model.FaaliyetKonusu" required /></td></tr>
+                </table>
+
+                <h3 class="mt-4">Tedarikçi Değerlendirme Kriterleri</h3>
+                <table style="width: 100%; border-collapse: collapse; border: 1px solid #ddd;">
+                    <tr><th>Kriter</th><th>Maks. Puan</th><th>Puan</th><th>Faaliyetlere İlişkin Notlar</th></tr>
+                    <tr><td>Fiyat</td><td>25</td><td><input type="number" name="Fiyat" value="@Model.Fiyat" class="puan-input" required /></td><td><input type="text" name="FiyatNot" value="-" /></td></tr>
+                    <tr><td>Ödeme Esnekliği</td><td>15</td><td><input type="number" name="OdemeEsnekligi" value="@Model.OdemeEsnekligi" class="puan-input" required /></td><td><input type="text" name="OdemeEsnekligiNot" value="-" /></td></tr>
+                    <tr><td>Ürün/Hizmet Kalitesi</td><td>25</td><td><input type="number" name="UrunKalitesi" value="@Model.UrunKalitesi" class="puan-input" required /></td><td><input type="text" name="UrunKalitesiNot" value="-" /></td></tr>
+                    <tr><td>Zamanındalık</td><td>15</td><td><input type="number" name="Zamanindalik" value="@Model.Zamanindalik" class="puan-input" required /></td><td><input type="text" name="ZamanindalikNot" value="-" /></td></tr>
+                    <tr><td>Uzmanlık</td><td>10</td><td><input type="number" name="Uzmanlik" value="@Model.Uzmanlik" class="puan-input" required /></td><td><input type="text" name="UzmanlikNot" value="-" /></td></tr>
+                    <tr><td>Destek Dökümanlar</td><td>5</td><td><input type="number" name="DestekDokumanlar" value="@Model.DestekDokumanlar" class="puan-input" requiredtd><td><input type="text" name="DestekDokumanlarNot" value="-" /></td></tr>
+                    <tr><td>Satış Sonrası Hizmet</td><td>5</td><td><input type="number" name="SatisSonrasiHizmet" value="@Model.SatisSonrasiHizmet" class="puan-input" required /></td><td><input type="text" name="SatisSonrasiHizmetNot" value="-" /></td></tr>
+                    <tr><td>Süreklilik</td><td>5</td><td><input type="number" name="Sureklilik" value="@Model.Sureklilik" class="puan-input" required /></td><td><input type="text" name="SureklilikNot" value="-" /></td></tr>
+                    <tr><td>Kalite Yönetim Sistemi</td><td>5</td><td><input type="number" name="KaliteYonetimSistemi" value="@Model.KaliteYonetimSistemi" class="puan-input" required /></td><td><input type="text" name="KaliteYonetimSistemiNot" value="-" /></td></tr>
+                </table>
+
+                <h3 class="mt-4">DÖF Açılması Gerekiyor mu?</h3>
+               <div>
+                    <label for="dofEvet">Evet</label>
+                    <input type="radio" id="dofEvet" name="DofAcilsinMi" value="Evet" @(Model.DofAcilsinMi == "Evet" ? "checked" : "") />
+                    <label for="dofHayir">Hayır</label>
+                    <input type="radio" id="dofHayir" name="DofAcilsinMi" value="Hayır" @(Model.DofAcilsinMi == "Hayır" ? "checked" : "") checked />
+                </div>
+
+                <h3 class="mt-4">Evet ise, hangi konuda DÖF açılmalı belirtiniz.</h3>
+    <textarea name="DofAciklama">@(!string.IsNullOrEmpty(Model.DofAciklama) ? Model.DofAciklama : "Döf Yok")</textarea>
+
+                <h3 class="mt-4">Değerlendirme Sonucu</h3>
+                <table style="width: 100%; border-collapse: collapse; border: 1px solid #ddd;">
+                    <tr>
+                        <th>Sınıflandırma</th>
+                        <th>Değerlendirme Sonucu</th>
+                        <th>Değerlendiren Ad/Soyad</th>
+                        <th style="text-align:center;">İmza</th>
+                    </tr>
+                    <tr>
+                        <td style="width: 10%;">
+                            <select name="Siniflandirma" id="Siniflandirma">
+                                <option value="A">A (85-100 Puan)</option>
+                                <option value="B">B (60-84 Puan)</option>
+                                <option value="C">C (0-59 Puan)</option>
+                                <option value="Y">Y (Yeni Tedarikci)</option>
+                            </select>
+                        </td>
+                        <td><input type="number" name="DegerlendirmeSonucu" id="DegerlendirmeSonucu" readonly /></td>
+                        <td><input type="text" name="DegerlendirenAdSoyad" value="@Model.DegerlendirenAdSoyad" required /></td>
+                        <td style="border: 1px solid #000; width: 40%; height:100px;"></td>
+                    </tr>
+                </table>
+
+                <button type="submit" class="btn btn-success" name="name" value="" > Kaydet></button>
+
+                
+            </div>
+        </form>
+        <div class="text-center mt-4">
+            <button class="print-button" onclick="yazdir()">Sayfayı Yazdır</button>
+        </div>
+    </div>
+}
+else
+{
+    <div id="print-area" class="card shadow-lg border-0">
+
+    <div class="card shadow-lg border-0">
+            <form method="post" asp-action="Dgrlendir" asp-route-id="@ViewBag.TedarikciId">
+
+                <div class="card-body">
+                    <div class="row mb-4">
+                        <table style="width: 100%; border-collapse: collapse;">
+                            <tr>
+                                <td style="text-align: center; width: 30%;">
+                                    <img src="~/AltasLogo.png" alt="ALTAS Aluminum" style="max-width: 200px;" />
+                                </td>
+                                <td style="text-align: center; width: 40%;">
+                                    <h3 style="color: #212D3D;">İKİNCİNCİL TEDARİKÇİ DEĞERLENDİRME FORMU</h3>
+                                </td>
+                                <td style="width: 30%;">
+                                    <small class="text-muted">Döküman No:</small>
+                                    <input type="text" value="KYS-F-07-005" name="DokumanNo" />
+                                    <input type="hidden" value="@ViewBag.TedarikciId" name="Id" required />
+
+                                    <small class="text-muted">Revizyon No:</small>
+                                    <input type="text" name="RevizyonNo" />
+
+                                    <small class="text-muted">Rev./Yayın Tarihi:</small>
+                                    <input type="date" name="RevizyonTarihi" />
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td colspan="3" class="full-width">
+                                    <label for="DegerlendirmeTarihi"><small class="text-muted">Değerlendirme Tarihi:</small></label>
+                                    <input type="date" name="DegerlendirmeTarihi" />
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <h3 class="mt-4">Dış Tedarikçi Bilgileri</h3>
+                    <table style="width: 100%;">
+                        <tr><td>Adı:</td><td><input type="text" name="Adi" value="@ViewBag.TedarikciAdi"></td></tr>
+                        <tr><td>Telefon No:</td><td><input type="text" name="TelefonNo" value="@ViewBag.TedarikciTelefon"></td></tr>
+                        <tr><td>E-Posta:</td><td><input type="email" name="EPosta" value="@ViewBag.TedarikciMail"></td></tr>
+                        <tr><td>İlgili Kişi ve Görevi:</td><td><input type="text" name="IlgiliKisi" value=""></td></tr>
+                        <tr><td>Faaliyet Konusu:</td><td><input type="text" name="FaaliyetKonusu" value=""></td></tr>
+                    </table>
+
+
+                    <h3 class="mt-4">Tedarikçi Değerlendirme Kriterleri</h3>
+                    <table style="width: 100%; border-collapse: collapse; border: 1px solid #ddd;">
+                        <tr>
+                            <th>Kriter</th>
+                            <th>Maks. Puan</th>
+                            <th>Puan</th>
+                            <th>Faaliyetlere İlişkin Notlar</th>
+                        </tr>
+                        <tr>
+                            <td>Fiyat</td>
+                            <td>25</td>
+                            <td><input type="number" name="Fiyat" value="" class="puan-input"></td>
+                            <td><input type="text" name="FiyatNot"></td>
+                        </tr>
+                        <tr>
+                            <td>Ödeme Esnekliği</td>
+                            <td>15</td>
+                            <td><input type="number" name="OdemeEsnekligi" value="" class="puan-input"></td>
+                            <td><input type="text" name="OdemeEsnekligiNot"></td>
+                        </tr>
+                        <tr>
+                            <td>Ürün/Hizmet Kalitesi</td>
+                            <td>25</td>
+                            <td><input type="number" name="UrunKalitesi" value="" class="puan-input"></td>
+                            <td><input type="text" name="UrunKalitesiNot"></td>
+                        </tr>
+                        <tr>
+                            <td>Zamanındalık</td>
+                            <td>15</td>
+                            <td><input type="number" name="Zamanindalik" value="" class="puan-input"></td>
+                            <td><input type="text" name="ZamanindalikNot"></td>
+                        </tr>
+                        <tr>
+                            <td>Uzmanlık</td>
+                            <td>10</td>
+                            <td><input type="number" name="Uzmanlik" value="" class="puan-input"></td>
+                            <td><input type="text" name="UzmanlikNot"></td>
+                        </tr>
+                        <tr>
+                            <td>Destek Dökümanlar</td>
+                            <td>5</td>
+                            <td><input type="number" name="DestekDokumanlar" value="" class="puan-input"></td>
+                            <td><input type="text" name="DestekDokumanlarNot"></td>
+                        </tr>
+                        <tr>
+                            <td>Satış Sonrası Hizmet</td>
+                            <td>5</td>
+                            <td><input type="number" name="SatisSonrasiHizmet" value="" class="puan-input"></td>
+                            <td><input type="text" name="SatisSonrasiHizmetNot"></td>
+                        </tr>
+                        <tr>
+                            <td>Süreklilik</td>
+                            <td>5</td>
+                            <td><input type="number" name="Sureklilik" value="" class="puan-input"></td>
+                            <td><input type="text" name="SureklilikNot"></td>
+                        </tr>
+                        <tr>
+                            <td>Kalite Yönetim Sistemi</td>
+                            <td>5</td>
+                            <td><input type="number" name="KaliteYonetimSistemi" value="" class="puan-input"></td>
+                            <td><input type="text" name="KaliteYonetimSistemiNot"></td>
+                        </tr>
+                    </table>
+
+
+                    <table style="width: 100%; border-collapse: collapse; border: 1px solid #ddd;">
+                        <tr style="text-align: center; height: 40px;">
+                            <td>
+                                <h3 class="mt-4" style="display: inline-block; margin: 0;">
+                                    DÖF Açılması Gerekiyor mu?
+                                </h3>
+                            </td>
+                            <td>
+                                <small>EVET</small>
+                                <input type="radio" name="DofAcilsinMi" value="Evet" style="margin-left: 10px;">
+                            </td>
+                            <td>
+                                <small>HAYIR</small>
+
+                                <input type="radio" name="DofAcilsinMi" value="Hayır" style="margin-left: 10px;">
+                            </td>
+                        </tr>
+                    </table>
+
+                              
+
+            
+            
+
+
+                    <h3 class="mt-4">Evet ise, hangi konuda DÖF açılmalı belirtiniz.</h3>
+                    <textarea name="DofAciklama"></textarea>
+
+                    <h3 class="mt-4">Değerlendirme Sonucu</h3>
+                    <table style="width: 100%; border-collapse: collapse; border: 1px solid #ddd;">
+                        <tr><th>Sınıflandırma</th><th>Değerlendirme Sonucu</th><th>Değerlendiren Ad/Soyad</th><th style="text-align:center;">İmza</th></tr>
+                        <tr>
+                            <td style="width: 10%;">
+                                <select name="Siniflandirma" id="Siniflandirma">
+                                    <option value="A">A (85-100 Puan)</option>
+                                    <option value="B">B (60-84 Puan)</option>
+                                    <option value="C">C (0-59 Puan)</option>
+                                    <option value="Y">Y (Yeni Tedarikci)</option>
+                                </select>
+                            </td>
+                            <td style="width: 10%;"><input type="number" name="DegerlendirmeSonucu" id="DegerlendirmeSonucu"></td>
+                            <td style ="width: 30%;"><input type="text" name="DegerlendirenAdSoyad"></td>
+                            <td style="border: 1px solid #000; width: 40%; height:100px;"></td>
+                    </table>
+
+                    <button type="submit" class="btn btn-success" name="name" value=""> Kaydet</button>
+                </div>
+            </form>
+            <div class="text-center mt-4">
+                <button class="print-button" onclick="yazdir()">Sayfayı Yazdır</button>
+            </div>
+        </div>
+    </div>
+    
+}
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // Sayfa yüklendiğinde inputlara event listener ekle
+        document.querySelectorAll('.puan-input').forEach(input => {
+            input.addEventListener('input', hesaplaToplamPuan);
+        });
+
+        // Sayfa yüklendiğinde input değerlerini kontrol et ve toplam puanı hesapla
+        hesaplaToplamPuan(true);
+    });
+
+    function hesaplaToplamPuan(initial = false) {
+        let toplamPuan = 0;
+
+        // Tüm .puan-input öğelerini gez ve toplam puanı hesapla
+        document.querySelectorAll('.puan-input').forEach(input => {
+            // Eğer input değeri boşsa veya geçerli bir sayı değilse, 0 kabul et
+            const deger = parseInt(input.value.trim()) || 0;
+            toplamPuan += deger;
+        });
+
+        // Toplam puanı DegerlendirmeSonucu alanına yaz
+        document.getElementById('DegerlendirmeSonucu').value = toplamPuan;
+
+        const siniflandirma = document.getElementById('Siniflandirma');
+        // Toplam puana göre sınıflandırma yap
+        if (toplamPuan >= 85) {
+            siniflandirma.value = 'A';
+        } else if (toplamPuan >= 60) {
+            siniflandirma.value = 'B';
+        } else if (toplamPuan > 0) {
+            siniflandirma.value = 'C';
+        } else {
+            siniflandirma.value = 'Y';
+        }
+
+        // Sayfa ilk yüklendiğinde inputlar boşsa, her birine 0 değeri atama
+        if (initial) {
+            document.querySelectorAll('.puan-input').forEach(input => {
+                // Eğer input değeri boşsa, '0' değeri atıyoruz
+                if (input.value.trim() === '') {
+                    input.value = '0';
+                }
+            });
+
+            // Başlangıçta toplam puanı tekrar hesaplıyoruz
+            toplamPuan = 0;
+            document.querySelectorAll('.puan-input').forEach(input => {
+                // Geçerli değeri alıp toplam puana ekliyoruz
+                toplamPuan += parseInt(input.value.trim()) || 0;
+            });
+
+            // Toplam puanı DegerlendirmeSonucu alanına yaz
+            document.getElementById('DegerlendirmeSonucu').value = toplamPuan;
+        }
+    }
+</script>
+
+

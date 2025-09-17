@@ -1,0 +1,185 @@
+﻿
+
+@{
+    ViewData["Title"] = "Yeni Stok Yönetim";
+}
+@Html.Partial("_SASidebar")
+
+<div class="container mt-5">
+    <h2 class="text-center">Yeni Stok İstek Raporu</h2>
+
+    <div style="width: 100%; max-width: 800px; margin: 0 auto; border: 2px solid #212D3D; border-radius: 8px; padding: 20px; background-color: #f9f9f9; font-family: Arial, sans-serif; font-size: 14px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+            <h2 style="text-align: center; color: #212D3D; margin-bottom: 20px;">Malzeme Talep Fişi</h2>
+
+            <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
+                <tr>
+                    <td style="width: 30%; font-weight: bold; border: 1px solid #ccc; padding: 8px; background-color: #212D3D; color: #ffffff;">Şirket</td>
+                    <td style="border: 1px solid #ccc; padding: 8px;">
+                        <input type="text" name="SirketAdi" value="ALTAS" style="width: 100%; padding: 5px;" readonly />
+                    </td>
+                </tr>
+                <tr>
+                    <td style="font-weight: bold; border: 1px solid #ccc; padding: 8px; background-color: #212D3D; color: #ffffff;">Form Türü</td>
+                    <td style="border: 1px solid #ccc; padding: 8px;">
+                        <input type="text" name="FormTuru" value="Malzeme Talep Formu" style="width: 100%; padding: 5px;" readonly />
+                    </td>
+                </tr>
+                @foreach (var form in Model.FormListesi)
+                {
+                    <tr>
+                        <td style="font-weight: bold; border: 1px solid #ccc; padding: 8px; background-color: #212D3D; color: #ffffff;">Form No</td>
+                        <td style="border: 1px solid #ccc; padding: 8px;">
+                            @form.FormNo
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: bold; border: 1px solid #ccc; padding: 8px; background-color: #212D3D; color: #ffffff;">Tarih</td>
+                        <td style="border: 1px solid #ccc; padding: 8px;">
+                            @form.Tarih?.ToString("yyyy-MM-dd")
+                        </td>
+                    </tr>
+                }
+
+            </table>
+
+            <h3 style="text-align: center; color: #212D3D; margin-bottom: 20px;">Malzeme Listesi</h3>
+            <table id="materialTable" style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
+                <thead>
+                    <tr>
+                        <th style="border: 1px solid #ccc; padding: 8px; background-color: #212D3D; color: #ffffff;">Malzeme Adı</th>
+                        <th style="border: 1px solid #ccc; padding: 8px; background-color: #212D3D; color: #ffffff;">Mevcut Stok</th>
+                        <th style="border: 1px solid #ccc; padding: 8px; background-color: #212D3D; color: #ffffff;">Talep Miktarı</th>
+                        <th style="border: 1px solid #ccc; padding: 8px; background-color: #212D3D; color: #ffffff;">Termin Tarihi</th>
+                        <th style="border: 1px solid #ccc; padding: 8px; background-color: #212D3D; color: #ffffff;">Açıklama</th>
+                    <th style="border: 1px solid #ccc; padding: 8px; background-color: #212D3D; color: #ffffff;">İşlem</th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (int i = 0; i < Model.TalepListesi.Count; i++)
+                    {
+
+                    <tr class="@(Model.Malzeme == Model.TalepListesi[i].MalzemeAdi ? "bg-success" : "")">
+                        <td><input type="text" name="Malzemeler[@i].MalzemeAdi" value="@Model.TalepListesi[i].MalzemeAdi" style="width: 100%;" required /></td>
+                            <td><input type="text" name="Malzemeler[@i].MevcutStok" value="@Model.TalepListesi[i].MevcutStok" style="width: 100%;" /></td>
+                            <td><input type="text" name="Malzemeler[@i].TalepMiktari" value="@Model.TalepListesi[i].TalepMiktari" style="width: 100%;" required /></td>
+                            <td><input type="date" name="Malzemeler[@i].TerminTarihi" value="@Model.TalepListesi[i].TerminTarihi?.ToString("yyyy-MM-dd")" style="width: 100%;" /></td>
+                            <td><input type="text" name="Malzemeler[@i].Aciklama" value="@Model.TalepListesi[i].Aciklama" style="width: 100%;" /></td>
+                        <td>
+                       
+                            <div class="dropdown">
+                                <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton-@i" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Ürün Kartı Seç
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton-@i">
+                                    <li>
+                                        <form asp-action="DevamliUrun" method="post" id="form-@i">
+                                            <input type="hidden" name="MalzemeAdi" value="@Model.TalepListesi[i].MalzemeAdi" id="MalzemeAdi-@i" />
+                                            <input type="hidden" name="MevcutStok" value="@Model.TalepListesi[i].MevcutStok" id="MevcutStok-@i" />
+                                            <input type="hidden" name="TalepMiktari" value="@Model.TalepListesi[i].TalepMiktari" id="TalepMiktari-@i" />
+                                            <input type="hidden" name="TerminTarihi" value="@Model.TalepListesi[i].TerminTarihi" id="TerminTarihi-@i" />
+                                            <input type="hidden" name="Aciklama" value="@Model.TalepListesi[i].Aciklama" id="Aciklama-@i" />
+                                            <button class="dropdown-item send-data" data-row="@i" type="submit">Devamlı Ürün Kartı</button>
+                                        </form>
+                                    </li>
+                                    <li>
+                                        <form asp-action="TekSeferlikUrun" method="post" id="form-@i">
+                                            <input type="hidden" name="MalzemeAdi" value="@Model.TalepListesi[i].MalzemeAdi" id="MalzemeAdi-@i" />
+                                            <input type="hidden" name="MevcutStok" value="@Model.TalepListesi[i].MevcutStok" id="MevcutStok-@i" />
+                                            <input type="hidden" name="TalepMiktari" value="@Model.TalepListesi[i].TalepMiktari" id="TalepMiktari-@i" />
+                                            <input type="hidden" name="TerminTarihi" value="@Model.TalepListesi[i].TerminTarihi" id="TerminTarihi-@i" />
+                                            <input type="hidden" name="Aciklama" value="@Model.TalepListesi[i].Aciklama" id="Aciklama-@i" />
+                                            <button class="dropdown-item send-data" data-row="@i" type="submit">Yeni Ürün Kartı</button>
+                                        </form>
+                                    </li>
+                                </ul>
+                            </div>
+                        </td>
+                        
+                        </tr>
+                   
+                    }
+                </tbody>
+            </table>
+
+            <div style="text-align: right; margin-bottom: 20px;">
+            </div>
+
+            <h3 style="text-align: center; color: #212D3D; margin-bottom: 20px;">Onay Bilgileri</h3>
+            <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
+                @foreach (var form in Model.FormListesi)
+                {
+                  @*   <tr>
+                        <td style="width: 30%; font-weight: bold; border: 1px solid #ccc; padding: 8px; background-color: #212D3D; color: #ffffff;">Onaylayan</td>
+                        <td style="border: 1px solid #ccc; padding: 8px;">
+                            @form.Onaylayan
+                        </td>
+                    </tr> *@
+                    <tr>
+                        <td style="font-weight: bold; border: 1px solid #ccc; padding: 8px; background-color: #212D3D; color: #ffffff;">Talepte Bulunan</td>
+                        <td style="border: 1px solid #ccc; padding: 8px;">
+                            @form.TalepEden
+                        </td>
+                    </tr>
+                }
+            </table>
+            <div style="text-align: center; display: flex; justify-content: center; align-items: center; gap: 10px;">
+                <form asp-action="EskiIstek" method="post">
+                     @foreach (var form in Model.FormListesi)
+                {
+                    <input type="hidden" name="id" value="@form.FormNo" />
+                }
+                <small>Tüm ürünlerin kartı eklenmiş ise kartı eskiye atınız.</small>
+                <button type="submit" style="background-color: #28a745; color: #fff; border: none; padding: 10px 20px; border-radius: 5px; font-size: 16px;" >Eski Kart Yap</button>
+            </form>
+               
+            </div>
+
+        
+    </div>
+</div>
+
+<script>
+    // // JavaScript for adding/removing rows
+    // document.getElementById("addRow").addEventListener("click", function () {
+    //     var table = document.getElementById("materialTable").getElementsByTagName('tbody')[0];
+    //     var newRow = table.insertRow(table.rows.length);
+    //     newRow.innerHTML = `
+    //         <td><input type="text" name="Malzemeler[][MalzemeAdi]" style="width: 100%;" required /></td>
+    //         <td><input type="text" name="Malzemeler[][MevcutStok]" style="width: 100%;" /></td>
+    //         <td><input type="text" name="Malzemeler[][TalepMiktari]" style="width: 100%;" required /></td>
+    //         <td><input type="date" name="Malzemeler[][TerminTarihi]" style="width: 100%;" /></td>
+    //         <td><input type="text" name="Malzemeler[][Aciklama]" style="width: 100%;" /></td>
+    //         <td><button type="button" class="removeRow" style="background-color: #dc3545; color: #fff; border: none; padding: 5px 10px; border-radius: 3px;">Sil</button></td>
+    //     `;
+    // });
+
+    // document.querySelector('tbody').addEventListener('click', function (e) {
+    //     if (e.target && e.target.classList.contains('removeRow')) {
+    //         var row = e.target.closest('tr');
+    //         row.remove();
+    //     }
+    // });
+</script>
+<script>
+    document.querySelectorAll('.send-data').forEach(button => {
+        button.addEventListener('click', function (e) {
+            const rowIndex = this.dataset.row;
+            const row = document.querySelector(`#materialTable tbody tr:nth-child(${parseInt(rowIndex) + 1})`);
+
+            // Get values from the row
+            const malzemeAdi = row.querySelector(`input[name="Malzemeler[${rowIndex}].MalzemeAdi"]`).value;
+            const mevcutStok = row.querySelector(`input[name="Malzemeler[${rowIndex}].MevcutStok"]`).value;
+            const talepMiktari = row.querySelector(`input[name="Malzemeler[${rowIndex}].TalepMiktari"]`).value;
+            const terminTarihi = row.querySelector(`input[name="Malzemeler[${rowIndex}].TerminTarihi"]`).value;
+            const aciklama = row.querySelector(`input[name="Malzemeler[${rowIndex}].Aciklama"]`).value;
+
+            // Update hidden inputs in the form
+            document.getElementById(`MalzemeAdi-${rowIndex}`).value = malzemeAdi;
+            document.getElementById(`MevcutStok-${rowIndex}`).value = mevcutStok;
+            document.getElementById(`TalepMiktari-${rowIndex}`).value = talepMiktari;
+            document.getElementById(`TerminTarihi-${rowIndex}`).value = terminTarihi;
+            document.getElementById(`Aciklama-${rowIndex}`).value = aciklama;
+        });
+    });
+</script>

@@ -1,0 +1,149 @@
+﻿@using altasplato_satinalma.Services
+@{
+    ViewData["Title"] = "Sipariş Yönetim";
+}
+@Html.Partial("_SASidebar")
+@*    @model IEnumerable<altasplato_satinalma.Services.DepoRow>
+ *@
+@{
+    ViewData["Title"] = "Tree Bildirimler";
+}
+@model List<DepoRow>
+<div class="row justify-content-center mb-4">
+    <!-- Sipariş Yönetimi Başlığı -->
+    <div class="col-2 text-center d-flex align-items-center justify-content-center">
+        <h2 style="color: #212d3d;">
+            <i class="fas fa-box"></i> Sipariş Yönetimi
+        </h2>
+    </div>
+
+    <div class="col-2 text-center">
+        <div class="p-3" style="background-color: #7f8c9e; border: 1px solid #34495e; border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); height: 100px;">
+            <div class="d-flex align-items-center justify-content-center">
+                <i class="fas fa-cart-plus fa-lg" style="color: #f1c40f; margin-right: 10px;"></i>
+                <h6 class="mt-2" style="color: white; display: inline;">Ambalaj Siparişleri</h6>
+
+            </div>
+            <p class=" text-white" style="font-size: 0.8em; color: white;">Toplam @Model.Count sipariş</p>
+        </div>
+    </div>
+
+    <!-- Tedarikçi Önerileri -->
+@*     <div class="col-2 text-center">
+        <div class="p-3" style="background-color: #5a6b7d; border: 1px solid #34495e; border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); height: 100px;">
+            <div class="d-flex align-items-center justify-content-center">
+                <i class="fas fa-handshake fa-lg" style="color: #8B0000; margin-right: 10px;"></i>
+                <h6 class="mt-2 ml-2" style="color: white;"> Tedarikçi Önerileri</h6>
+            </div>
+            <p class=" text-white" style="font-size: 0.8em; color: white;">0 öneri mevcut</p>
+        </div>
+    </div>
+
+    <!-- Bekleyen Sipariş -->
+    <div class="col-2 text-center">
+        <div class="p-3" style="background-color: #3c4c5f; border: 1px solid #34495e; border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); height: 100px;">
+            <div class="d-flex align-items-center justify-content-center">
+                <i class="fas fa-cart-plus fa-lg" style="color: #f1c40f; margin-right: 10px;"></i>
+                <h6 class="mt-2 ml-2" style="color: white;"> Bekleyen Sipariş</h6>
+            </div>
+            <p class=" text-white" style="font-size: 0.8em; color: white;"></p>
+        </div>
+    </div> *@
+
+    <!-- Bildirimler -->
+    <div class="col-2 text-center">
+        <div class="p-3" style="background-color: #212d3d; border: 1px solid #34495e; border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); height: 100px;">
+            <div class="d-flex align-items-center justify-content-center">
+                <img src="~/TreeColor.png" alt="ThreeColor Logo" style="width: 140px; height:40px; object-fit: contain;">
+                <h6 class="mt-2 ml-2" style="color: #212d3d;"> </h6>
+            </div>
+            <p class=" text-white" style="font-size: 0.8em; color: white; ">Yeni bildirim yok</p>
+        </div>
+    </div>
+    
+
+    
+</div>
+
+<div class="container mt-3">
+    <h3>Ambalaj Türü Kontrolü</h3>
+
+    @if (TempData["Message"] != null)
+    {
+        <div class="alert alert-warning">
+            @TempData["Message"]
+        </div>
+    }
+
+    @if (Model.Any())
+    {
+        <table class="table table-bordered table-striped table-responsive">
+            <thead>
+                <tr>
+                    <th>Kart No</th>
+                    <th>Ambalaj Türü</th>
+                    <th>Son Giriş Tarihi</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var row in Model)
+                {
+                    <tr>
+                        <td>@row.KartNo</td>
+                        <td>@row.AmbalajTuru</td>
+                        <td>@row.SonGirisTarih</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <p>Yeni özel malzeme talebi yok.</p>
+    }
+</div>
+
+   
+
+
+
+  
+  
+
+@* <div class="card shadow-sm mb-4" style="background-color: #ffffff;">
+    <div class="card-header" style="background-color: #212d3d; color: #ffffff;">
+        <h4><i class="fas fa-list"></i> Sipariş Listesi</h4>
+    </div>
+    <div class="card-body">
+      
+
+@if (Model != null && Model.Any())
+{
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Ambalaj Türü</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var row in Model)
+            {
+                <tr>
+                    <td>@row.Id</td>
+                    <td>@row.AmbalajTuru</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>No relevant data found.</p>
+}
+
+    </div>
+</div> *@
+
+
+

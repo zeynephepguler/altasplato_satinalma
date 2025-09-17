@@ -1,0 +1,161 @@
+﻿@using altasplato_satinalma.Models
+@{
+    ViewData["Title"] = "Sipariş Yönetim";
+}
+@Html.Partial("_SASidebar")
+@model IEnumerable< SiparisTalepPdf>
+<div class="row justify-content-center mb-4">
+    <!-- Sipariş Yönetimi Başlığı -->
+    <div class="col-2 text-center d-flex align-items-center justify-content-center">
+        <h2 style="color: #212d3d;">
+            <i class="fas fa-box"></i> Sipariş Yönetimi
+        </h2>
+    </div>
+
+    <!-- Gelen Siparişler -->
+    <!-- Gelen Siparişler -->
+    <div class="col-2 text-center">
+        <div class="p-3" style="background-color: #7f8c9e; border: 1px solid #34495e; border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); height: 100px;">
+            <div class="d-flex align-items-center justify-content-center">
+                <i class="fas fa-file-alt fa-lg" style="color: #ffffff; margin-right: 10px;"></i>
+                <h6 class="mt-2" style="color: white; display: inline;">Kayıtlı Sipariş Formları</h6>
+            </div>
+            <p class="text-white" style="font-size: 0.8em;">Toplam @Model.Count() Form Kayıtlı</p>
+        </div>
+    </div>
+
+
+    
+    @{
+        var kartNoMessage = TempData["KartNoMessage"] as string;
+    }
+    <!-- Bildirimler -->
+    <div class="col-2 text-center">
+    <a href="@Url.Action("TreeBildirim", "SatinAlma")" style="text-decoration: none;">
+
+    
+        <div class="p-3" style="background-color: #212d3d; border: 1px solid #34495e; border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); height: 100px;">
+            <div class="d-flex align-items-center justify-content-center">
+                <img src="~/TreeColor.png" alt="ThreeColor Logo" style="width: 140px; height:40px; object-fit: contain;">
+                <h6 class="mt-2 ml-2" style="color: #212d3d;"> </h6>
+            </div>
+            <p class="text-white" style="font-size: 0.8em; color: white;">
+                    @ViewBag.Bildirim bildirim
+            </p>
+        </div>
+    
+    </a>
+    </div>
+
+</div>
+
+   
+
+
+
+    <!-- Sipariş Listesi -->
+  
+
+<div class="card shadow-sm mb-4" style="background-color: #ffffff;">
+    <div class="card-header" style="background-color: #212d3d; color: #ffffff;">
+       
+
+        <h2>Kayıtlı Sipariş Talep PDF Dosyaları</h2>
+    </div>
+
+    
+    <div class="card-body">
+        <form method="get" asp-controller="SatinAlma" asp-action="SiparisYonetim" style="display: inline-block; margin-right: 10px;">
+            <button type="submit" class="btn btn-outline-primary"   title="Sipariş İstek">
+                <i class="fas fa-list-alt"></i>
+            </button>
+        </form>
+
+        <!-- Tüm Siparişler -->
+        <form method="get" asp-controller="SatinAlma" asp-action="SiparisYonetimTermin" style="display: inline-block; margin-right: 10px;">
+            <button type="submit" class="btn btn-outline-secondary"   title="Tüm Siparişler">
+                <i class="fas fa-calendar-alt"></i>
+            </button>
+        </form>
+
+        <!-- Kayıtlı Formlar -->
+        <form method="get" asp-controller="SatinAlma" asp-action="KayitliSiparisForm" style="display: inline-block; margin-right: 10px;">
+            <button type="submit" class="btn btn-outline-success"   title="Kayıtlı Formlar">
+                <i class="fas fa-archive"></i>
+            </button>
+        </form>
+
+        <!-- Sipariş Ekle -->
+        <form method="post" asp-action="SiparisOlustur" asp-route-id="1" style="display: inline-block;" onsubmit="return confirm('Satın alma gerçekleştiyse devam ediniz');">
+            <button type="submit" class="btn btn-outline-dark"   title="Sipariş Ekle">
+                <i class="fas fa-plus-circle"></i>
+            </button>
+        </form>
+        @{
+            var message = TempData["message"] as string;
+        }
+
+        @if (TempData["message"] != null)
+        {
+            <div id="message" class="alert alert-success alert-dismissible fade show" role="alert" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 1000;">
+                @TempData["message"]
+            </div>
+        }
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Dosya Adı</th>
+                    <th>Kayıt Tarihi</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var dosya in Model)
+                {
+                    <tr>
+                        <td>@dosya.DosyaAdi</td>
+                        <td>@dosya.KayitTarihi.ToShortDateString()</td>
+                        <td>
+                            <div style="display: flex; align-items: center;">
+                                <a asp-controller="SatinAlma" asp-action="PdfIndir" asp-route-id="@dosya.Id">
+                                    <i class="fas fa-download"></i>
+                                </a>
+                                <form method="post" asp-action="PdfSil" asp-route-id="@dosya.Id" onsubmit="return confirm('Dosyayı silmek istiyor musunuz?');" class="ml-2" style="margin-left: 10px;">
+                                    <button type="submit" class="btn btn-danger btn-sm">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </form>
+                            </div>
+
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+
+<script>
+    // Wait for the DOM to fully load before executing the script
+    document.addEventListener('DOMContentLoaded', function () {
+        // Check if the message element exists
+        var message = document.getElementById('message');
+        if (message) {
+            // Set a timeout to hide the message after 3 seconds
+            setTimeout(function () {
+                message.classList.remove('show');
+                message.classList.add('fade');
+            }, 3000); // 3000 milliseconds = 3 seconds
+        }
+    });
+</script>
+<script>
+    // Bootstrap 5 Tooltip etkinleştirme
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl);
+    });
+</script>

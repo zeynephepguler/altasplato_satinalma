@@ -1,0 +1,168 @@
+﻿@{
+    ViewData["Title"] = "Ürün Ekle";
+}
+
+@Html.Partial("_SASidebar")
+
+
+@if(Model==null){
+<div class="container mt-5">
+    <h2 class="mb-4 text-center"><i class="fas fa-plus-circle"></i> Yeni Ürün Ekle</h2>
+
+    <form asp-action="urnEkle" method="post">
+        <div class="mb-3">
+            <label for="productName" class="form-label"><i class="fas fa-box"></i> Ürün Adı</label>
+            <input type="text" class="form-control" id="productName" name="UrunAdi" placeholder="Ürün adını giriniz" required>
+        </div>
+            <input type="text" class="form-control" id="productName" name="Aciklama" placeholder="Açıklama Giriniz"  required>
+
+            <div class="mb-3">
+                <label for="UrunKart" class="form-label"><i class="fas fa-user-card"></i> Ürun Kart</label>
+                <select class="form-selectl" id="UrunKart" name="UrunKart">
+                    <option value="" disabled selected>Ürun Kartı seçiniz</option>
+
+                    <option value="DevamliK">Devamlı Ürün</option>
+                    <option value="TekUrunK">Tek Ürün</option>
+
+                </select>
+            </div>
+        <div class="mb-3">
+            <label for="productCategory" class="form-label"><i class="fas fa-list"></i> Kategori</label>
+                <select class="form-select" id="productCategory" name="Kategori" required>
+                    <option value="">Kategori seçiniz</option>
+
+                    <optgroup label="Genel Kategoriler">
+                        <option value="Makine ve Takım Ekipmanları">Makine ve Takım Ekipmanları</option>
+                        <option value="Hammadde ve Üretim Malzemeleri">Hammadde ve Üretim Malzemeleri</option>
+                        <option value="Ambalaj ve Sarf Malzemeleri">Ambalaj ve Sarf Malzemeleri</option>
+                        <option value="Koruyucu ve İzolasyon Malzemeleri">Koruyucu ve İzolasyon Malzemeleri</option>
+                        <option value="Montaj ve Tespit Malzemeleri">Montaj ve Tespit Malzemeleri</option>
+                        <option value="Büro ve İdari Malzemeler">Büro ve İdari Malzemeler</option>
+                        <option value="Temizlik ve Bakım Ürünleri">Temizlik ve Bakım Ürünleri</option>
+                        <option value="Özel ve Teknik Malzemeler">Özel ve Teknik Malzemeler</option>
+                        <option value="Tahta Parçalar">Tahta Parçalar</option>
+                        <option value="Diğer">Diğer</option>
+
+
+                    </optgroup>
+
+                   
+                </select>
+
+        </div>
+
+        <div class="mb-3">
+            <label for="productStock" class="form-label"><i class="fas fa-layer-group"></i> Stok Miktarı</label>
+            <input type="number" class="form-control" id="productStock" name="StokMiktari" placeholder="0" required value="0" readonly>
+        </div>
+
+        <div class="mb-3">
+            <label for="productUnit" class="form-label"><i class="fas fa-balance-scale"></i> Birim</label>
+            <input type="text" class="form-control" id="productUnit" name="Birim" placeholder="Birim (ör: Adet, Kg)" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="productSupplier" class="form-label"><i class="fas fa-user-tie"></i> Tedarikçi</label>
+            <select class="form-control" id="productSupplier" name="Tedarikci">
+                <option value="" disabled selected>Tedarikçi seçiniz</option>
+                @foreach (var tedarikci in ViewBag.Ted)
+                {
+                    <option value="@tedarikci.Id">@tedarikci.TedarikciAdi</option> <!-- Assuming 'Id' is the value and 'Name' is the display name -->
+                }
+            </select>
+        </div>
+
+
+        <div class="text-center">
+            <button type="submit" class="btn btn-primary btn-lg"><i class="fas fa-save"></i> Kaydet</button>
+        </div>
+    </form>
+
+</div>
+}else{
+    <div class="container mt-5">
+        <h2 class="mb-4 text-center"><i class="fas fa-plus-circle"></i> Yeni Ürün Ekle</h2>
+       
+        <form asp-action="urnEkle" method="post">
+            <div class="mb-3">
+                <label for="productName" class="form-label"><i class="fas fa-box"></i> Ürün Adı</label>
+                <input type="text" class="form-control" id="productName" name="UrunAdi" placeholder="@Model.UrunAdi" value="@Model.UrunAdi" required>
+            </div>
+
+            <div class="form-group">
+                <label for="productName">Açıklama</label>
+                <input type="text" class="form-control" id="productName" name="Aciklama" placeholder="@Model.Aciklama" value="@Model.Aciklama" required>
+            </div>
+
+            <div class="form-group">
+                <label for="urunKart">Ürün Kartı</label>
+                <input type="text" class="form-control" id="urunKart" name="UrunKart" placeholder="@Model.UrunKart" value="@Model.UrunKart" required>
+            </div>
+
+
+          @*   <div class="mb-3">
+                <label for="UrunKart" class="form-label"><i class="fas fa-user-tie"></i> Urun Kart</label>
+                <select class="form-selectl" id="UrunKart" name="UrunKart">
+                    <option value="" disabled selected>Devamlı Ürün</option>
+
+                    <option value="DevamliK">Devamlı Ürün</option>
+                    <option value="TekUrunK">Tek Ürün</option>
+
+                </select>
+            </div>
+ *@
+            <div class="mb-3">
+                <label for="productCategory" class="form-label"><i class="fas fa-list"></i> Kategori</label>
+                <select class="form-select" id="productCategory" name="Kategori" required>
+                    <option value="">Kategori seçiniz</option>
+
+                    <optgroup label="Genel Kategoriler">
+                        <option value="Makine ve Takım Ekipmanları">Makine ve Takım Ekipmanları</option>
+                        <option value="Hammadde ve Üretim Malzemeleri">Hammadde ve Üretim Malzemeleri</option>
+                        <option value="Ambalaj ve Sarf Malzemeleri">Ambalaj ve Sarf Malzemeleri</option>
+                        <option value="Koruyucu ve İzolasyon Malzemeleri">Koruyucu ve İzolasyon Malzemeleri</option>
+                        <option value="Montaj ve Tespit Malzemeleri">Montaj ve Tespit Malzemeleri</option>
+                        <option value="Büro ve İdari Malzemeler">Büro ve İdari Malzemeler</option>
+                        <option value="Temizlik ve Bakım Ürünleri">Temizlik ve Bakım Ürünleri</option>
+                        <option value="Özel ve Teknik Malzemeler">Özel ve Teknik Malzemeler</option>
+                        <option value="Tahta Parçalar">Tahta Parçalar</option>
+                        <option value="Diğer">Diğer</option>
+
+
+                    </optgroup>
+
+
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label for="productStock" class="form-label"><i class="fas fa-layer-group"></i> Stok Miktarı</label>
+                <input type="number" class="form-control" id="productStock" name="StokMiktari" placeholder="0" required value="0" readonly>
+            </div>
+
+            <div class="mb-3">
+                <label for="productUnit" class="form-label"><i class="fas fa-balance-scale"></i> Birim</label>
+                <input type="text" class="form-control" id="productUnit" name="Birim" placeholder="Birim (ör: Adet, Kg)" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="productSupplier" class="form-label"><i class="fas fa-user-tie"></i> Tedarikçi</label>
+                <select class="form-control" id="productSupplier" name="Tedarikci">
+                    <option value="" disabled selected>Tedarikçi seçiniz</option>
+                    @foreach (var tedarikci in ViewBag.Ted)
+                    {
+                        <option value="@tedarikci.Id">@tedarikci.TedarikciAdi</option> <!-- Assuming 'Id' is the value and 'Name' is the display name -->
+                    }
+                </select>
+            </div>
+
+
+            <div class="text-center">
+                <button type="submit" class="btn btn-primary btn-lg"><i class="fas fa-save"></i> Kaydet</button>
+            </div>
+        </form>
+
+    </div>
+
+
+}

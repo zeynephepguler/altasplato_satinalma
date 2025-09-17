@@ -1,0 +1,97 @@
+﻿@{
+    ViewData["Title"] = "ALTAŞ Plato";
+    var dogumGunuMesajlari = ViewBag.DogumGunuMesajlari as List<string>;
+}
+@* @model List<DovizKuru> *@
+
+<div class="card shadow border-0 mt-4 col-12">
+    <div class="card-header rounded bg-plato ml-0 py-3">
+        <div class="col-12 text-light text-center">
+            <h3 class="display-8"> ALTAŞ Plato </h3>
+        </div>
+    </div>
+    <div class="card-body">
+
+        @if (dogumGunuMesajlari != null && dogumGunuMesajlari.Any())
+        {
+            <div class="birthday-alert text-center p-4 mb-4 rounded shadow position-relative">
+               <h1>
+                    🎉🎉🎉
+               </h1>
+                <h3 class="mb-3" style="font-weight: 700; color: #d48806;">
+                    
+                    🎊 Bugün Doğum Günü Olan Çalışanlarımız! 🎂
+                </h3>
+               
+                <ul class="list-unstyled" style="font-size: 1.3rem; font-weight: 600; color: #b35b00;">
+                    @foreach (var mesaj in dogumGunuMesajlari)
+                    {
+                        <li class="mb-2">
+                            <span style="margin-right:8px;">🎈</span>@mesaj
+                        </li>
+                    }
+                </ul>
+                <h1>
+                    🎉🎉🎉
+                </h1>
+                <canvas id="confetti-canvas" style="position:absolute; top:0; left:0; width:100%; height:100%; pointer-events:none;"></canvas>
+            </div>
+
+            <style>
+                .birthday-alert {
+                    background: linear-gradient(135deg, #fff8e1 0%, #ffd54f 100%);
+                    border: 2px solid #ffc107;
+                    box-shadow: 0 0 15px 3px rgba(255, 193, 7, 0.7);
+                    animation: pulseGlow 3s ease-in-out infinite;
+                    overflow: hidden;
+                }
+
+                @@keyframes pulseGlow {
+                    0%, 100% {
+                        box-shadow: 0 0 15px 3px rgba(255, 193, 7, 0.7);
+                    }
+
+                    50% {
+                        box-shadow: 0 0 25px 8px rgba(255, 193, 7, 1);
+                    }
+                }
+            </style>
+
+            <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+            <script>
+                setTimeout(() => {
+                    const canvas = document.getElementById('confetti-canvas');
+                    const myConfetti = confetti.create(canvas, { resize: true, useWorker: true });
+
+                    myConfetti({
+                        particleCount: 150,
+                        spread: 100,
+                        origin: { y: 0.6 },
+                    });
+
+                    setTimeout(() => {
+                        myConfetti({
+                            particleCount: 100,
+                            spread: 70,
+                            origin: { x: 0.2, y: 0.3 }
+                        });
+                        myConfetti({
+                            particleCount: 100,
+                            spread: 70,
+                            origin: { x: 0.8, y: 0.3 }
+                        });
+                    }, 1000);
+                }, 500);
+            </script>
+        }
+
+        <div class="text-center bg-platocard py-4">
+            <p>ALTAŞ Plato'ya Hoşgeldiniz.</p>
+
+            <div class="container mt-4">
+                <h2 class="text-center mb-4">Güncel Döviz Kurları</h2>
+                
+            </div>
+        </div>
+    </div>
+</div>

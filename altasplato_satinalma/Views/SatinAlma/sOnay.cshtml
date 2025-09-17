@@ -1,0 +1,70 @@
+﻿@{
+    ViewData["Title"] = "Onay Sayfası";
+}
+@* @{
+    Layout = "~/Views/Shared/_LayoutS.cshtml";
+} *@
+@Html.Partial("_SASidebar")
+
+
+<div class="container mt-4">
+    <div class="row">
+        @if (ViewBag.talep != null && ViewBag.talep.Count > 0)
+        {
+            @foreach (var talep in ViewBag.talep)
+            {
+                <div class="col-md-4 col-sm-6 mb-3">
+                    <div class="card p-3 shadow-sm">
+                        <h5 class="card-title"><i class="fas fa-box"></i> @talep.MalzemeAdi</h5>
+                        <p class="card-text"><i class="fas fa-tools"></i> Durum: @talep.Durum</p>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="col-12">
+                <div class="alert alert-warning text-center">
+                    Hiçbir talep bulunmamaktadır.
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+
+<!-- Sipariş Listesi -->
+<div class="mb-4" style="background-color: #ffffff; padding: 15px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+    <div class="d-flex justify-content-between align-items-center">
+        <h4 style="color: #212d3d;">Siparişler Durumu</h4>
+    </div>
+    <table class="table table-striped table-hover" style="background-color: #ffffff; border-radius: 8px; overflow: hidden;">
+        <thead style="background-color: #212d3d; color: #ffffff;">
+            <tr>
+                <th>Sipariş Numarası</th>
+                <th>Urun Adı</th>
+                <th>Stok Kodu</th>
+                <th>Sipariş Tarihi</th>
+                <th>Onay Durumu</th>
+                <th>Durum</th>
+                <th>Konum</th>
+                <th>Notlar</th>
+            </tr>
+        </thead>
+        <tbody style="color: #212d3d;">
+            @foreach (var siparis in Model)
+            {
+                <tr style="background-color: @((Model.IndexOf(siparis) % 2 == 0) ? "#f8f9fa" : "#ffffff");">
+                    <td>@siparis.SiparisID</td>
+                    <td>@siparis.UrunAdi</td>
+                    <td>@siparis.StokID</td>
+                    <td>@siparis.SiparisTarihi.ToString("yyyy-MM-dd")</td>
+                    <td>@siparis.OnayDurumu</td>
+                    <td>@siparis.Durum</td>
+                    <td>@siparis.Konum</td>
+                    <td>@siparis.SiparisNotu</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
