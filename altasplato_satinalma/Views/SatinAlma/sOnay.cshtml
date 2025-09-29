@@ -17,6 +17,7 @@
                     <div class="card p-3 shadow-sm">
                         <h5 class="card-title"><i class="fas fa-box"></i> @talep.MalzemeAdi</h5>
                         <p class="card-text"><i class="fas fa-tools"></i> Durum: @talep.Durum</p>
+
                     </div>
                 </div>
             }
@@ -31,7 +32,60 @@
         }
     </div>
 </div>
+<!---tablo yapımı -->
+<div class="container mt-4">
+    <h4>Stok Listesi</h4>
+    <table class="table table-bordered table-striped">
+        <thead class="table-primary">
+            <tr>
+                <th>Stok Kodu</th>
+                <th>Malzeme  Adı</th>
+                <th>Talepte Bulunan</th>
+                <th>Stok Miktarı</th>
+                <th>Talep Miktarı</th>
+                <th>Termin Tarihi</th>
+                <th>Belge No</th>
+                <th>Talep Fişi </th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (ViewBag.talep != null && ViewBag.talep.Count > 0)
+            {
+                foreach (var talep in ViewBag.talep)
+                {
+                    <tr>
 
+                        <td>@talep.Id</td>
+                        <td>@talep.MalzemeAdi</td>
+                        <td>@talep.TalepEden</td>
+                        <td>@talep.MevcutStok</td>                       
+                        <td>@talep.TalepMiktari</td>
+                        <td>@talep.TerminTarihi?.ToString("yyyy-MM-dd")</td>
+                        <td> </td>
+                        <td>
+                            <form method="post">
+                                <a asp-action="YeniStokYonetim" asp-route-talepId="@talep.Id"
+                                   class="btn btn-success" style="background-color: darkred; border: none; color: #ffffff;">
+                                    <i class="fas fa-plus" style="margin-right: 4px;"></i>
+                                </a>
+                            </form>
+                          
+
+                        </td>
+
+
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="8" class="text-center">Stok bulunmamaktadır.</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
 
 <!-- Sipariş Listesi -->
 <div class="mb-4" style="background-color: #ffffff; padding: 15px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">

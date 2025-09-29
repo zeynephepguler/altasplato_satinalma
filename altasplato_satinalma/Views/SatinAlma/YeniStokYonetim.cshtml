@@ -1,6 +1,4 @@
-﻿
-
-@{
+﻿@{
     ViewData["Title"] = "Yeni Stok Yönetim";
 }
 @Html.Partial("_SASidebar")
@@ -55,51 +53,42 @@
 
                     </tr>
                 </thead>
-                <tbody>
-                    @for (int i = 0; i < Model.TalepListesi.Count; i++)
+            <tbody>
+                @if (ViewBag.talep != null && ViewBag.talep.Count > 0)
+                {
+                    foreach (var talep in ViewBag.talep)
                     {
+                        <tr>
 
-                    <tr class="@(Model.Malzeme == Model.TalepListesi[i].MalzemeAdi ? "bg-success" : "")">
-                        <td><input type="text" name="Malzemeler[@i].MalzemeAdi" value="@Model.TalepListesi[i].MalzemeAdi" style="width: 100%;" required /></td>
-                            <td><input type="text" name="Malzemeler[@i].MevcutStok" value="@Model.TalepListesi[i].MevcutStok" style="width: 100%;" /></td>
-                            <td><input type="text" name="Malzemeler[@i].TalepMiktari" value="@Model.TalepListesi[i].TalepMiktari" style="width: 100%;" required /></td>
-                            <td><input type="date" name="Malzemeler[@i].TerminTarihi" value="@Model.TalepListesi[i].TerminTarihi?.ToString("yyyy-MM-dd")" style="width: 100%;" /></td>
-                            <td><input type="text" name="Malzemeler[@i].Aciklama" value="@Model.TalepListesi[i].Aciklama" style="width: 100%;" /></td>
-                        <td>
-                       
-                            <div class="dropdown">
-                                <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton-@i" data-bs-toggle="dropdown" aria-expanded="false">
-                                    Ürün Kartı Seç
-                                </button>
-                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton-@i">
-                                    <li>
-                                        <form asp-action="DevamliUrun" method="post" id="form-@i">
-                                            <input type="hidden" name="MalzemeAdi" value="@Model.TalepListesi[i].MalzemeAdi" id="MalzemeAdi-@i" />
-                                            <input type="hidden" name="MevcutStok" value="@Model.TalepListesi[i].MevcutStok" id="MevcutStok-@i" />
-                                            <input type="hidden" name="TalepMiktari" value="@Model.TalepListesi[i].TalepMiktari" id="TalepMiktari-@i" />
-                                            <input type="hidden" name="TerminTarihi" value="@Model.TalepListesi[i].TerminTarihi" id="TerminTarihi-@i" />
-                                            <input type="hidden" name="Aciklama" value="@Model.TalepListesi[i].Aciklama" id="Aciklama-@i" />
-                                            <button class="dropdown-item send-data" data-row="@i" type="submit">Devamlı Ürün Kartı</button>
-                                        </form>
-                                    </li>
-                                    <li>
-                                        <form asp-action="TekSeferlikUrun" method="post" id="form-@i">
-                                            <input type="hidden" name="MalzemeAdi" value="@Model.TalepListesi[i].MalzemeAdi" id="MalzemeAdi-@i" />
-                                            <input type="hidden" name="MevcutStok" value="@Model.TalepListesi[i].MevcutStok" id="MevcutStok-@i" />
-                                            <input type="hidden" name="TalepMiktari" value="@Model.TalepListesi[i].TalepMiktari" id="TalepMiktari-@i" />
-                                            <input type="hidden" name="TerminTarihi" value="@Model.TalepListesi[i].TerminTarihi" id="TerminTarihi-@i" />
-                                            <input type="hidden" name="Aciklama" value="@Model.TalepListesi[i].Aciklama" id="Aciklama-@i" />
-                                            <button class="dropdown-item send-data" data-row="@i" type="submit">Yeni Ürün Kartı</button>
-                                        </form>
-                                    </li>
-                                </ul>
-                            </div>
-                        </td>
-                        
+                            <td>@talep.Id</td>
+                            <td>@talep.MalzemeAdi</td>
+                            <td>@talep.TalepEden</td>
+                            <td>@talep.MevcutStok</td>
+                            <td>@talep.TalepMiktari</td>
+                            <td>@talep.TerminTarihi?.ToString("yyyy-MM-dd")</td>
+                            <td> </td>
+                            <td>
+                                <form method="post">
+                                    <a asp-action="YeniStokYonetim" asp-route-talepId="@talep.Id"
+                                       class="btn btn-success" style="background-color: darkred; border: none; color: #ffffff;">
+                                        <i class="fas fa-plus" style="margin-right: 4px;"></i>
+                                    </a>
+                                </form>
+
+
+                            </td>
+
+
                         </tr>
-                   
                     }
-                </tbody>
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="8" class="text-center">Stok bulunmamaktadır.</td>
+                    </tr>
+                }
+            </tbody>
             </table>
 
             <div style="text-align: right; margin-bottom: 20px;">

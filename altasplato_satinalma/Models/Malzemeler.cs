@@ -12,6 +12,8 @@
         public string Durum { get; set; } = "-";
         public bool Urun { get; set; } = false;
 
+        public string TalepEden { get; set; } = "-";
+
         public Formlar Form { get; set; }
 
     }

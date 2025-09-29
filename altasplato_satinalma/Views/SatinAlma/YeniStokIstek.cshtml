@@ -51,7 +51,7 @@
                 </tr>
                 <tr>
                     <td style="font-weight: bold; border: 1px solid #ccc; padding: 8px; background-color: #212D3D; color: #ffffff;">Form Türü</td>
-                    <td style="border: 1px solid #ccc; padding: 8px;">
+                    <td style="border: 1px solid #ccc, padding: 8px;">
                         <input class="form-control" type="text" name="FormTuru" value="Malzeme Talep Formu" style="width: 100%; padding: 5px;" readonly />
                     </td>
                 </tr>
@@ -137,7 +137,7 @@
                 <tr>
                     <td style="font-weight: bold; border: 1px solid #ccc; padding: 8px; background-color: #212D3D; color: #ffffff;">Talepte Bulunan</td>
                     <td style="border: 1px solid #ccc; padding: 8px;">
-                        <input class="form-control" type="text" name="TalepEden" style="width: 100%; padding: 5px;" placeholder="Talepte bulunan kişi adı" required />
+                        <input class="form-control" type="text" name="Malzemeler[0].TalepEden" style="width: 100%; padding: 5px;" placeholder="Talepte bulunan kişi adı" required />
                     </td>
                 </tr>
             </table>
@@ -179,6 +179,9 @@
                 <td><input type="date" class="form-control" name="Malzemeler[${rowCount}].TerminTarihi" /></td>
                 <td><input type="text" class="form-control" name="Malzemeler[${rowCount}].Aciklama" /></td>
                 <td><button type="button" class="removeRow btn btn-danger btn-sm">Sil</button></td>
+                <td><input type="text" class="form-control" name="Malzemeler[${rowCount}].TalepEden" /></td>
+
+
             `;
 
             // Append the new row to the table
