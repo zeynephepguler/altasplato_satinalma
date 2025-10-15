@@ -1,0 +1,86 @@
+﻿@using altasplato_satinalma.Models
+@{
+    ViewData["Title"] = "Sipariş Yönetim";
+}
+@Html.Partial("_SASidebar")
+@model List<Malzemeler>
+<h2 class="text-center" style="color: #212d3d;"><i class="fas fa-warehouse"></i> Stok Yönetimi</h2>
+
+<!-- Depo Ürün Listesi -->
+<div class="mb-4" style="background-color: #ffffff; padding: 15px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+    <div class="d-flex justify-content-start align-items-center">
+        <a asp-action="DepoYonetim" class="btn btn-outline-secondary" style="color: #212d3d; margin-right: 10px;"><i class="fas fa-boxes"></i> Depo Ürün Listesi</a>
+        <a asp-action="DepoYonetimCikis" class="btn btn-outline-secondary" style="color: #212d3d; margin-right: 10px;"><i class="fas fa-boxes"></i> Depo Mal Çıkış</a>
+        <a asp-action="DepoEk" class="btn btn-success" style="background-color: #27ae60; border: none; color: #ffffff; margin-right: 10px;">
+            <i class="fas fa-plus"></i> Yeni Stok Ekle
+        </a>
+        <a asp-action="BekleyenStok" class="btn btn-success" style="background-color: #27ae60; border: none; color: #ffffff; margin-right: 10px;">
+            <i class="fas fa-plus"></i> Bekleyen Stok Kartları
+        </a>
+    </div>
+</div>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success" role="alert">
+        @TempData["SuccessMessage"]
+    </div>
+}
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger" role="alert">
+        @TempData["ErrorMessage"]
+    </div>
+}
+   
+
+
+
+    <!-- Sipariş Listesi -->
+  
+
+<div class="card shadow-sm mb-4" style="background-color: #ffffff;">
+    <div class="card-header" style="background-color: #212d3d; color: #ffffff;">
+        <h4><i class="fas fa-list"></i> Yeni Stok İstek Listesi</h4>
+    </div>
+    <div class="card-body">
+        <table class="table table-striped table-hover" style="background-color: #ffffff;">
+            <thead style="background-color: #34495e; color: #ffffff;">
+                <tr>
+                    <th><i class="fas fa-hashtag"></i> Form ID</th>
+                    <th><i class="fas fa-calendar-alt"></i> Termin Tarihi</th>
+                    <th><i class="fas fa-box"></i> Malzeme Adı</th>
+                    <th><i class="fas fa-sort-numeric-up"></i> Talep Miktarı</th>
+                    <th><i class="fas fa-cogs"></i> Mevcut Stok</th>
+                    <th><i class="fas fa-info-circle"></i> Açıklama</th>
+                    <th><i class="fas fa-tools"></i> İşlemler</th>
+                </tr>
+            </thead>
+            <tbody style="color: #212d3d;">
+                @foreach (var talep in Model)
+                {
+                    <tr>
+                        <td>@talep.FormId</td>
+                        <td>@talep.TerminTarihi</td>
+                        <td>@talep.MalzemeAdi</td>
+                        <td>@talep.TalepMiktari</td>
+                        <td>@talep.MevcutStok</td>
+                        <td>@talep.Aciklama</td>
+                        <td>
+                            <form asp-action="YeniStokYonetim" method="post">
+                                <input type="hidden" name="FormId" value="@talep.FormId" />
+                                <button class="btn btn-success btn-sm"><i class="fas fa-search"></i>Raporu Görüntüle</button>
+
+                            </form>
+                            
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+

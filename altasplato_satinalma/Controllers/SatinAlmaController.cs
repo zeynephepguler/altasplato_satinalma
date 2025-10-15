@@ -27,6 +27,10 @@ namespace altasplato_satinalma.Controllers
         //    return View(model: okunmayan); // int model olarak gönderiliyor
         //}
 
+       public IActionResult Haber()
+        {
+            return View();
+        }
 
 
         public IActionResult UrunGecmis(string UrunId) 
@@ -142,7 +146,9 @@ namespace altasplato_satinalma.Controllers
                 m.TalepMiktari,
                 m.MevcutStok,
                 m.Aciklama,
-                m.Durum
+                m.Durum,
+                m.TalepEden,
+               
             }).ToList();
 
             return Json(siparisler);
@@ -435,7 +441,9 @@ namespace altasplato_satinalma.Controllers
                         TerminTarihi = model.SiparisTerminTarihi,
                         Aciklama = model.SiparisNotu,
                         Durum = "Sipariş Verildi",
-                        Urun = true
+                        Urun = true,
+                        TalepEden=yeniForm.TalepEden
+                        
                     };
 
                     _db.MalzemeTalep.Add(yeniTalep);
@@ -1089,7 +1097,8 @@ namespace altasplato_satinalma.Controllers
                     MalzemeAdi = talep.MalzemeAdi,
                     TalepMiktari = talep.TalepMiktari,
                     MevcutStok = talep.MevcutStok,
-                    Aciklama = talep.Aciklama
+                    Aciklama = talep.Aciklama,
+                    TalepEden= talep.TalepEden,
                 })
                 .ToList();
                 }
@@ -1166,6 +1175,7 @@ namespace altasplato_satinalma.Controllers
                                TalepEdilenUrun = t.TalepEdilenUrun,
                                TalepEdilenMiktar = t.TalepEdilenMiktar,
                                Birim = t.Birim
+
                            }).OrderByDescending(t => t.TalepNo)
                            .ToList();
 
@@ -1203,6 +1213,8 @@ namespace altasplato_satinalma.Controllers
                         MevcutStok = malzeme.MevcutStok,
                         TalepMiktari = malzeme.TalepMiktari,
                         TerminTarihi = malzeme.TerminTarihi,
+                        TalepEden = malzeme.TalepEden,
+
                         Durum = "Beklemede",
                         Aciklama = string.IsNullOrEmpty(malzeme.Aciklama) ? "-" : malzeme.Aciklama,
                     };
@@ -1232,8 +1244,7 @@ namespace altasplato_satinalma.Controllers
             return View("YeniStokIstek",model);
         }
 
-
-
+        
 
 
 

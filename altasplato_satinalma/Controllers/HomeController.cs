@@ -3,9 +3,11 @@ using altasplato_satinalma.Models;
  using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
  using System.Diagnostics;
- 
+using Newtonsoft.Json.Linq;
+
+
 using System.Xml.Linq;
- 
+
 namespace altasplato_satinalma.Controllers
 {
 
@@ -13,8 +15,11 @@ namespace altasplato_satinalma.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly AltasPlatoDbContext _db;
+        private readonly string API_KEY = "7bc0d1b4855f4faa8ea7bdc8be965bac"; // kendi API keyini buraya yaz
+        private readonly string symbol = "ALMMF";       // Alüminyum sembolü
 
-        public HomeController(ILogger<HomeController> logger , AltasPlatoDbContext db)
+
+        public HomeController(ILogger<HomeController> logger, AltasPlatoDbContext db)
         {
             _logger = logger;
             _db = db;
@@ -28,29 +33,29 @@ namespace altasplato_satinalma.Controllers
         }
 
 
-         public IActionResult Plato()
+        public IActionResult Plato()
         {
- 
-            //var bugun = DateTime.Today;
 
-            //// UserBirthday null olmayan ve doğum günü bugün olan çalışanları çekiyoruz
-            //var dogumGunuOlanlar = _db.CalisanBilg
-            //    .Where(c => c.UserBirthday.HasValue &&
-            //                c.UserBirthday.Value.Month == bugun.Month &&
-            //                c.UserBirthday.Value.Day == bugun.Day)
-            //    .ToList();
+            var bugun = DateTime.Today;
 
-            //// Mesajları oluşturuyoruz
-            //var mesajlar = dogumGunuOlanlar.Select(c =>
-            //{
-            //    var isim = !string.IsNullOrEmpty(c.UserName) && !string.IsNullOrEmpty(c.UserLastname)
-            //        ? $"{c.UserName} {c.UserLastname}"
-            //        : c.UserId;
-            //    return $"Mutlu Yıllar {isim}! İyi ki doğdun!";
-            //}).ToList();
+            // UserBirthday null olmayan ve doğum günü bugün olan çalışanları çekiyoruz
+            var dogumGunuOlanlar = _db.CalisanBilg
+               .Where(c => c.UserBirthday.HasValue &&
+                            c.UserBirthday.Value.Month == bugun.Month &&
+                            c.UserBirthday.Value.Day == bugun.Day)
+                .ToList();
 
-            //ViewBag.DogumGunuMesajlari = mesajlar;
-            //KurCek();
+            // Mesajları oluşturuyoruz
+            var mesajlar = dogumGunuOlanlar.Select(c =>
+            {
+                var isim = !string.IsNullOrEmpty(c.UserName) && !string.IsNullOrEmpty(c.UserLastname)
+                   ? $"{c.UserName} {c.UserLastname}"
+                   : c.UserId;
+                return $"Mutlu Yıllar {isim}! İyi ki doğdun!";
+            }).ToList();
+
+            ViewBag.DogumGunuMesajlari = mesajlar;
+            KurCek();
             return View();
         }
 
@@ -67,6 +72,7 @@ namespace altasplato_satinalma.Controllers
             decimal euroKuru = 0;
             //string sonGuncellemeTarihi = string.Empty;
 
+
             try
             {
                 XDocument xml = XDocument.Load(tcmbUrl);
@@ -78,7 +84,7 @@ namespace altasplato_satinalma.Controllers
 
                 if (dolarElement != null && euroElement != null)
                 {
-                    dolarKuru = Convert.ToDecimal(dolarElement.Element("ForexSelling").Value) /10000;
+                    dolarKuru = Convert.ToDecimal(dolarElement.Element("ForexSelling").Value) / 10000;
                     euroKuru = Convert.ToDecimal(euroElement.Element("ForexSelling").Value) / 10000;
                     //sonGuncellemeTarihi = DateTime.ParseExact(tarihElement.Value, "yyyyMMdd", CultureInfo.InvariantCulture).ToString("dd MMMM yyyy");
 
@@ -105,11 +111,18 @@ namespace altasplato_satinalma.Controllers
             return View();
 
         }
-         
 
+        public async Task<IActionResult> lme()
+        {
+           
+
+            return View();
+        }
 
     }
-}
+}       
+
+
 
 
 

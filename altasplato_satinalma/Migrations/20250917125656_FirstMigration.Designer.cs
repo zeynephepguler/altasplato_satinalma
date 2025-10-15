@@ -246,6 +246,10 @@ namespace altasplato_satinalma.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("TalepEden")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime?>("TerminTarihi")
                         .HasColumnType("datetime2");
 

@@ -292,7 +292,8 @@ namespace altasplato_satinalma.Migrations
                     TerminTarihi = table.Column<DateTime>(type: "datetime2", nullable: true),
                     Aciklama = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Durum = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Urun = table.Column<bool>(type: "bit", nullable: false)
+                    Urun = table.Column<bool>(type: "bit", nullable: false),
+                    TalepEden = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {

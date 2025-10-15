@@ -93,5 +93,129 @@
                 
             </div>
         </div>
+
+
+
+        <!DOCTYPE html>
+        <html lang="tr">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Alüminyum Tahmini Fiyat</title>
+            <style>
+                body {
+                    font-family: Arial;
+                    text-align: center;
+                    margin: 30px;
+                }
+
+                #price-container {
+                    display: inline-block;
+                    padding: 20px;
+                    border: 1px solid #ccc;
+                    border-radius: 10px;
+                    background-color: #f9f9f9;
+                }
+
+                .current-price {
+                    color: green;
+                    font-size: 26px;
+                    font-weight: bold;
+                    margin: 10px 0;
+                }
+
+                .last-updated {
+                    color: gray;
+                    font-style: italic;
+                    margin-top: 10px;
+                }
+
+                .notice {
+                    color: orange;
+                    font-size: 14px;
+                    margin-top: 10px;
+                }
+            </style>
+        </head>
+        <body>
+            <h1>Alüminyum Güncel Fiyat (Tahmini)</h1>
+            <div id="price-container">
+                <div id="current-price">Yükleniyor...</div>
+                <div id="last-updated"></div>
+                <div class="notice">Tahmini fiyat, gerçek LME değerine yakın olabilir. USD/ton cinsindendir.</div>
+            </div>
+
+            <script>
+                // Twelve Data API'ye erişim için gerekli API anahtarı
+                const API_KEY = 'cc3ca1ea70fa4ecdaf673fb5cc170a8e';
+
+                // Alüminyum fiyatını çekmek için kullanılacak sembol
+                const SYMBOL = 'ALMMF'; // Ücretsiz kullanılabilen sembol
+
+                // Verilerin alınacağı zaman aralığı (örnek: günlük)
+                const INTERVAL = '1day';
+
+                // API'den kaç veri alınacağı (1 = sadece son fiyat)
+                const OUTPUT_SIZE = 1;
+
+                // Verilerin yenilenme sıklığı (milisaniye cinsinden → 86400000 = 24 saat)
+                const REFRESH_INTERVAL = 86400000;
+
+                // Asenkron (async) fonksiyon: API'den alüminyum fiyatını çekmek için kullanılır
+                async function fetchAluminum() {
+                    // HTML'deki fiyat ve güncelleme alanlarını JavaScript'e tanıtıyoruz
+                    const priceDiv = document.getElementById('current-price');
+                    const lastUpdatedDiv = document.getElementById('last-updated');
+
+                    // Kullanıcıya veri yükleniyor bilgisini gösteriyoruz
+                    priceDiv.innerText = 'Yükleniyor...';
+                    lastUpdatedDiv.innerText = '';
+
+                    // API isteği için gerekli URL'yi oluşturuyoruz
+                    const url = `https://api.twelvedata.com/time_series?symbol=${SYMBOL}&interval=${INTERVAL}&outputsize=${OUTPUT_SIZE}&apikey=${API_KEY}`;
+
+                    try {
+                        // API'ye isteği gönderiyoruz (veriyi çekiyoruz)
+                        const res = await fetch(url);
+
+                        // Gelen yanıtı JSON formatına çeviriyoruz
+                        const data = await res.json();
+
+                        // Eğer API'den geçerli veriler geldiyse (data.values doluysa)
+                        if (data.values && data.values.length > 0) {
+                            // Son kapanış fiyatını alıyoruz ve ondalık olarak iki basamağa yuvarlıyoruz
+                            const price = parseFloat(data.values[0].close).toFixed(2);  // Fiyatı ekrana yazdırıyoruz
+                            priceDiv.innerText = `$${price} USD/ton`;
+
+                            // Güncelleme zamanını Türkçe biçimde gösteriyoruz
+                            lastUpdatedDiv.innerText = `Son güncelleme: ${new Date().toLocaleString('tr-TR')}`;
+                        }
+                        // Eğer veri bulunamadıysa kullanıcıya uyarı mesajı gösteriyoruz
+                        else {
+                            priceDiv.innerText = 'Veri bulunamadı.';
+                            lastUpdatedDiv.innerText = `Sembol veya API key kontrol edin.`;
+                        }
+                    } catch (err) {
+                        // Eğer API isteğinde bir hata oluşursa (örnek: internet yoksa)
+                        priceDiv.innerText = 'Veri alınamadı.';
+                        lastUpdatedDiv.innerText = `Hata: ${err.message}`;
+                    }
+                }
+
+                // Sayfa ilk açıldığında veriyi hemen çekmek için fonksiyonu çağırıyoruz
+                fetchAluminum();
+
+                // Veriyi her 24 saatte (1 günde) bir otomatik yenilemek için zamanlayıcı oluşturuyoruz
+                setInterval(fetchAluminum, REFRESH_INTERVAL);
+            </script>
+
+        </body>
+    </html>
+
+
+
+
+
+
     </div>
 </div>

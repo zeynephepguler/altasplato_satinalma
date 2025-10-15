@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using altasplato_satinalma.Data;
 
@@ -11,9 +12,11 @@ using altasplato_satinalma.Data;
 namespace altasplato_satinalma.Migrations
 {
     [DbContext(typeof(AltasPlatoDbContext))]
-    partial class AltasPlatoDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250923102023_IlkOlusturma")]
+    partial class IlkOlusturma
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -200,9 +203,7 @@ namespace altasplato_satinalma.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("TalepEden")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                   
 
                     b.Property<DateTime>("Tarih")
                         .HasColumnType("datetime2");
@@ -239,13 +240,13 @@ namespace altasplato_satinalma.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("TalepEden")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("TalepMiktari")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TalepEden")
+                       .IsRequired()
+                       .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("TerminTarihi")
                         .HasColumnType("datetime2");

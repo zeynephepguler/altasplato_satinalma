@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using altasplato_satinalma.Data;
 
@@ -11,9 +12,11 @@ using altasplato_satinalma.Data;
 namespace altasplato_satinalma.Migrations
 {
     [DbContext(typeof(AltasPlatoDbContext))]
-    partial class AltasPlatoDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250929131516_InitialCreate")]
+    partial class InitialCreate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
