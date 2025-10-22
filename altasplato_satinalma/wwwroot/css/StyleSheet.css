@@ -1,0 +1,62 @@
+﻿.container {
+    text-align: center;
+    padding: 40px;
+    font-family: Arial, sans-serif;
+}
+
+.title {
+    font-size: 42px;
+    font-weight: bold;
+    margin-bottom: 40px;
+}
+
+.departmanlar {
+    display: flex;
+    justify-content: center;
+    gap: 50px;
+    flex-wrap: wrap;
+}
+
+.departman {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.cards {
+    display: flex;
+    gap: 20px;
+    border: 2px solid #333;
+    padding: 20px;
+    border-radius: 6px;
+}
+
+.card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.avatar {
+    width: 100px;
+    height: 120px;
+    background-color: #f0f0f0;
+    border: 2px solid #ccc;
+    border-radius: 4px;
+    background-image: url('https://cdn-icons-png.flaticon.com/512/847/847969.png');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 50px;
+}
+
+.card p {
+    margin-top: 10px;
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.departman h2 {
+    margin-top: 15px;
+    font-size: 28px;
+    font-weight: bold;
+}
